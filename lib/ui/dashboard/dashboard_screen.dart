@@ -14,7 +14,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-
+        child:  SingleChildScrollView(
         child: Column(
           children: [
             Container(
@@ -148,32 +148,42 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ]
             ),
             SizedBox(height: 50),
-
-            TextButton(
-              child: const Text(
-                'Ok',
-                style: TextStyle(fontSize: 18, color: Colors.white),
-              ),
-              style: ButtonStyle(
-                  padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.fromLTRB(50,10,50,10)),
-                  backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF8017DA)),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                          side: BorderSide(color: const Color(0xFF8017DA))
-                      )
-                  )
-              ),
-              onPressed: () {
-                /*Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomeScreen()),
-                );*/
-              },
+            Container(
+              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+              child:SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    child: const Text(
+                      'Ok',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                    style: ButtonStyle(
+                        padding: MaterialStateProperty.all<EdgeInsets>(
+                            EdgeInsets.fromLTRB(50, 10, 50, 10)),
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Color(0xFF8017DA)),
+                        shape: MaterialStateProperty.all<
+                            RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                                side: BorderSide(
+                                    color: const Color(0xFF8017DA))))),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const AddPetScreen()),
+                      );
+                    },
+                  )) ,
             )
+
+
+
 
           ]
           ,
+        )
         )
     );
   }
