@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:paw_record/ui/detailviews/detailview_screen.dart';
 
 class PetDetailScreen extends StatefulWidget {
   const PetDetailScreen({Key? key}) : super(key: key);
@@ -196,7 +197,11 @@ class _PetDetailScreenState extends State<PetDetailScreen> {
                       )
                   ),
                   onPressed: () {
-                    //signup screen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const DetailViewScreen()),
+                    );
                   },
                 ),
                 SizedBox(height: 15,)

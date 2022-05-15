@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:paw_record/ui/activities/activities_screen.dart';
 import 'package:paw_record/ui/dashboard/dashboard_screen.dart';
+import 'package:paw_record/ui/detailviews/detailview_screen.dart';
 import 'package:paw_record/ui/profile/profile_screen.dart';
+import 'package:paw_record/ui/register/register_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -17,9 +19,9 @@ class _HomeScreenState extends State<HomeScreen> {
     final pages = [
       const DashboardScreen(),
 
-      const ActivityScreen(),
+      const DetailViewScreen(),
 
-      const ProfileScreen()
+      const RegisterScreen()
     ];
 
     @override
@@ -50,12 +52,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 icon: pageIndex == 0
                     ? const Icon(
                   Icons.home_filled,
-                  color: Color(0xFF656566),
+                  color: Color(0xFF8017DA),
                   size: 25,
                 )
                     : const Icon(
                   Icons.home_outlined,
-                  color: Color(0xFF8017DA),
+                  color: Color(0xFF656566),
                   size: 25,
                 ),
               ),
@@ -69,12 +71,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 icon: pageIndex == 1
                     ? const Icon(
                   Icons.work_rounded,
-                  color: Color(0xFF656566),
+                  color: Color(0xFF8017DA),
+
                   size: 25,
                 )
                     : const Icon(
                   Icons.work_outline_outlined,
-                  color:Color(0xFF8017DA),
+                  color:Color(0xFF656566),
                   size: 25,
                 ),
               ),
@@ -88,12 +91,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 icon: pageIndex == 2
                     ? const Icon(
                   Icons.person,
-                  color: Color(0xFF656566),
+                  color: Color(0xFF8017DA),
                   size: 25,
                 )
                     : const Icon(
                   Icons.person_outline,
-                  color: Color(0xFF8017DA),
+                  color: Color(0xFF656566),
                   size: 25,
                 ),
               ),

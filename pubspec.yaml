@@ -57,6 +57,7 @@ flutter:
     - images/
     - images/ic_splash_dog.png
     - images/paw_recd.png
+    - images/bgg_image.png
   fonts:
     - family: ElMessiri
       fonts:

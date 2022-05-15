@@ -102,12 +102,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         Container(
                             width: MediaQuery.of(context).size.width,
                             margin: EdgeInsets.fromLTRB(15,5,15,5),
-                            decoration: BoxDecoration(color: Colors.purpleAccent,
+                            decoration: BoxDecoration(color: Color(0xFFE7DCE8),
                                 borderRadius: BorderRadius.circular(10.0)),
                             child: Image.asset(
-                              'images/ic_dog.png',
+                              'images/bgg_image.png',
                               width: double.infinity,
                               height: 180,
+                              fit: BoxFit.cover,
                             )
                         )
                     )
@@ -128,12 +129,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           Container(
                               width: MediaQuery.of(context).size.width,
                               margin: EdgeInsets.fromLTRB(15,5,15,5),
-                              decoration: BoxDecoration(color: Colors.purpleAccent,
+                              decoration: BoxDecoration(color: Color(0xFFE7DCE8),
                                   borderRadius: BorderRadius.circular(10.0)),
                               child: Image.asset(
-                                'images/ic_dog.png',
+                                'images/bgg_image.png',
                                 width: double.infinity,
                                 height: 180,
+                                fit: BoxFit.cover,
                               )
                           )
                       )
@@ -154,12 +156,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           Container(
                               width: MediaQuery.of(context).size.width,
                               margin: EdgeInsets.fromLTRB(15,5,15,5),
-                              decoration: BoxDecoration(color: Colors.purpleAccent,
+                              decoration: BoxDecoration(color: Color(0xFFE7DCE8),
                                   borderRadius: BorderRadius.circular(10.0)),
                               child: Image.asset(
-                                'images/ic_dog.png',
+                                'images/bgg_image.png',
                                 width: double.infinity,
                                 height: 180,
+                                fit: BoxFit.cover,
                               )
                           )
                       )
@@ -180,18 +183,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           Container(
                               width: MediaQuery.of(context).size.width,
                               margin: EdgeInsets.fromLTRB(15,5,15,5),
-                              decoration: BoxDecoration(color: Colors.purpleAccent,
+                              decoration: BoxDecoration(color: Color(0xFFE7DCE8),
                                   borderRadius: BorderRadius.circular(10.0)),
                               child: Image.asset(
-                                'images/ic_dog.png',
+                                'images/bgg_image.png',
                                 width: double.infinity,
                                 height: 180,
+                                fit: BoxFit.cover,
                               )
                           )
                       )
 
                   ),
-                )
+                ),
               ],
             )
 
