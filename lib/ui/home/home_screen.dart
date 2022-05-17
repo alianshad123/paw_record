@@ -21,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       const DetailViewScreen(),
 
-      const RegisterScreen()
+      const ProfileScreen()
     ];
 
     @override

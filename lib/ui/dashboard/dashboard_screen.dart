@@ -5,6 +5,8 @@ import 'package:paw_record/ui/addpet/addpet_screen.dart';
 import 'package:paw_record/ui/petdetail/petdetail_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
+
+
   const DashboardScreen({Key? key}) : super(key: key);
 
   @override
@@ -214,6 +216,7 @@ Widget _createSearchView() {
     child: new TextField(
       controller: _searchview,
       decoration: InputDecoration(
+
         hintText: "Search",
         hintStyle: new TextStyle(color: Colors.grey[300]),
       ),
