@@ -13,7 +13,12 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
 
-
+  int _currentIndex = 0;
+  List<String> listPaths = [
+    "images/slider_one.jpg",
+    "images/slider_two.jpg",
+    "images/slider_three.jpg",
+  ];
 
   final _searchview =  TextEditingController();
   @override
@@ -59,32 +64,47 @@ class _DashboardScreenState extends State<DashboardScreen> {
             SizedBox(height: 10),
             _createSearchView(),
             SizedBox(height: 10),
-            CarouselSlider(
-              options: CarouselOptions(
-                height: 150.0,
-                autoPlay: true,
-                autoPlayInterval: Duration(seconds: 3),
-                enlargeCenterPage: true,
-                autoPlayAnimationDuration: Duration(milliseconds: 800),
-                autoPlayCurve: Curves.fastOutSlowIn,
-                scrollDirection: Axis.horizontal,
+            Container(
+              margin:
+              const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+              child: Column(
+                children: [
+                  CarouselSlider.builder(
+                    itemCount: listPaths.length,
+                    options: CarouselOptions(
+                        autoPlay: true,
+                        onPageChanged: (index, reason) {
+                          setState(() {
+                            _currentIndex = index;
+                          });
+                        }),
+                    itemBuilder: (context, index, realIndex) {
+                      return MyImageView(listPaths[index]);
+                    },
+                  ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: listPaths.map((url) {
+                      int index = listPaths.indexOf(url);
+                      return Container(
+                        width: 8.0,
+                        height: 8.0,
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 2.0),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: _currentIndex == index
+                              ? const Color.fromRGBO(0, 0, 0, 0.9)
+                              : const Color.fromRGBO(0, 0, 0, 0.4),
+                        ),
+                      );
+                    }).toList(),
+                  )
+                ],
               ),
-              items: [1, 2, 3, 4, 5].map((i) {
-                return Builder(
-                  builder: (BuildContext context) {
-                    return Container(
-                        width: MediaQuery.of(context).size.width,
-                        margin: EdgeInsets.symmetric(horizontal: 5.0),
-                        decoration: BoxDecoration(color: Colors.amber),
-                        child: Image.asset(
-                          'images/ic_dog.png',
-                          width: 200,
-                          height: 100,
-                        ));
-                  },
-                );
-              }).toList(),
             ),
+
             SizedBox(height: 10),
             Column(
               children: [
@@ -204,16 +224,45 @@ class _DashboardScreenState extends State<DashboardScreen> {
 Widget _createSearchView() {
   var _searchview;
   return new Container(
-    margin: EdgeInsets.fromLTRB(20, 5, 20, 0),
-    decoration: BoxDecoration(border: Border.all(width: 1.0),
-    borderRadius: BorderRadius.circular(20.0)),
+    margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+    /*decoration: BoxDecoration(border: Border.all(width: 1.0),
+    borderRadius: BorderRadius.circular(20.0)),*/
     child: new TextField(
       controller: _searchview,
       decoration: InputDecoration(
-        hintText: "Search",
-        hintStyle: new TextStyle(color: Colors.grey[300]),
+        hintText: "Send the sample",
+        hintStyle: new TextStyle(color: Color(0xFF959496)),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15.0),
+          borderSide: BorderSide.none
+        ),
+        prefixIcon: Icon(Icons.search,color: Color(0xFF959496)),
+        filled: true,
+        fillColor: Color(0xFFD1D0D2)
       ),
-      textAlign: TextAlign.center,
+
+
     ),
   );
+}
+
+class MyImageView extends StatelessWidget {
+  String imgPath;
+
+  MyImageView(this.imgPath);
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Container(
+      margin: EdgeInsets.only(left: 5.0, top: 10.0, right: 5.0, bottom: 10.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8.0),
+        image: DecorationImage(
+          image: AssetImage(imgPath),
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
 }
