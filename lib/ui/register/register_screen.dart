@@ -50,97 +50,104 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
           Container(
               padding: const EdgeInsets.fromLTRB(30, 70, 30, 50),
-              child:  Card(
-                child: Column(
-                  children: <Widget>[
+               child:Wrap(
+                 children:[
+                   Card(
+                     child: Column(
+                       children: <Widget>[
 
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 40
-                      ),
-                      child: Column(
-                        children: [
-                          makeInput(label: "Full name",obsureText: true),
-                          makeInput(label: "Email"),
-                          makeInput(label: "Password",obsureText: true),
-                          SizedBox(height: 15),
-                          Row(
-                            children: [
-                              Material(
-                                child: Checkbox(
-                                  value: agree,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      agree = value ?? false;
-                                    });
-                                  },
-                                ),
-                              ),
-                              const Text(
-                                'I agree with the rules',
-                                overflow: TextOverflow.ellipsis,
-                              )
-                            ],
-                          ),
-                          SizedBox(height: 5),
-                          Row(
-                            children: [
-                              Material(
-                                child: Checkbox(
-                                  value: agree_,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      agree_ = value ?? false;
-                                    });
-                                  },
-                                ),
-                              ),
-                              Flexible(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(right: 2),
-                                  child: Text('I do not want to receive newsletter',
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              )
-                              /*const Text(
+                         Padding(
+                           padding: EdgeInsets.symmetric(
+                               horizontal: 40
+                           ),
+                           child: Column(
+                             children: [
+                               makeInput(label: "Full name",obsureText: true),
+                               makeInput(label: "Email"),
+                               makeInput(label: "Password",obsureText: true),
+                               SizedBox(height: 15),
+                               Row(
+                                 children: [
+                                   Material(
+                                     child: Checkbox(
+                                       value: agree,
+                                       onChanged: (value) {
+                                         setState(() {
+                                           agree = value ?? false;
+                                         });
+                                       },
+                                     ),
+                                   ),
+                                   const Text(
+                                     'I agree with the rules',
+                                     overflow: TextOverflow.ellipsis,
+                                   )
+                                 ],
+                               ),
+                               SizedBox(height: 5),
+                               Row(
+                                 children: [
+                                   Material(
+                                     child: Checkbox(
+                                       value: agree_,
+                                       onChanged: (value) {
+                                         setState(() {
+                                           agree_ = value ?? false;
+                                         });
+                                       },
+                                     ),
+                                   ),
+                                   Flexible(
+                                     child: Padding(
+                                       padding: const EdgeInsets.only(right: 2),
+                                       child: Text('I do not want to receive newsletter',
+                                         style: TextStyle(
+                                           color: Colors.black,
+                                         ),
+                                         maxLines: 1,
+                                         overflow: TextOverflow.ellipsis,
+                                       ),
+                                     ),
+                                   )
+                                   /*const Text(
                                 'I do not want to receive newsletter',
                                 overflow: TextOverflow.ellipsis,
                               )*/
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          TextButton(
-                            child: const Text(
-                              'Sign Up',
-                              style: TextStyle(fontSize: 18, color: Colors.white),
-                            ),
-                            style: ButtonStyle(
-                                padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.fromLTRB(50,10,50,10)),
-                                backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF8017DA)),
-                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20.0),
-                                        side: BorderSide(color: const Color(0xFF8017DA))
-                                    )
-                                )
-                            ),
-                            onPressed: () {
-                              //signup screen
-                            },
-                          )
+                                 ],
+                               ),
+                               SizedBox(height: 10),
+                               TextButton(
+                                 child: const Text(
+                                   'Sign Up',
+                                   style: TextStyle(fontSize: 18, color: Colors.white),
+                                 ),
+                                 style: ButtonStyle(
+                                     padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.fromLTRB(50,10,50,10)),
+                                     backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF8017DA)),
+                                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                         RoundedRectangleBorder(
+                                             borderRadius: BorderRadius.circular(20.0),
+                                             side: BorderSide(color: const Color(0xFF8017DA))
+                                         )
+                                     )
+                                 ),
+                                 onPressed: () {
+                                   //signup screen
+                                 },
+                               )
 
-                        ],
-                      ),
-                    ),
+                             ],
+                           ),
+                         ),
+                         SizedBox(height: 100,)
 
-                  ],
-                ),
-              )
+                       ],
+                     ),
+                   )
+                 ]
+
+               )
+
 
           ),
 
