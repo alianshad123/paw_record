@@ -52,50 +52,57 @@ class _SignInScreenState extends State<SignInScreen> {
 
               Container(
                   padding: const EdgeInsets.fromLTRB(30, 70, 30, 50),
-                  child:  Card(
-                    child: Column(
-                      children: <Widget>[
+                  child:Wrap(
+                    children: [
+                      Card(
+                        child: Column(
+                          children: <Widget>[
 
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 40
-                          ),
-                          child: Column(
-                            children: [
-                              makeInput(label: "Email"),
-                              makeInput(label: "Password",obsureText: true),
-                              SizedBox(height: 25),
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 40
+                              ),
+                              child: Column(
+                                children: [
+                                  makeInput(label: "Email"),
+                                  makeInput(label: "Password",obsureText: true),
+                                  SizedBox(height: 25),
 
-                              TextButton(
-                                child: const Text(
-                                  'Sign In',
-                                  style: TextStyle(fontSize: 18, color: Colors.white),
-                                ),
-                                style: ButtonStyle(
-                                    padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.fromLTRB(50,10,50,10)),
-                                    backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF8017DA)),
-                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(20.0),
-                                            side: BorderSide(color: const Color(0xFF8017DA))
+                                  TextButton(
+                                    child: const Text(
+                                      'Sign In',
+                                      style: TextStyle(fontSize: 18, color: Colors.white),
+                                    ),
+                                    style: ButtonStyle(
+                                        padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.fromLTRB(50,10,50,10)),
+                                        backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF8017DA)),
+                                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                            RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(20.0),
+                                                side: BorderSide(color: const Color(0xFF8017DA))
+                                            )
                                         )
-                                    )
-                                ),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => const HomeScreen()),
-                                  );
-                                },
-                              )
+                                    ),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => const HomeScreen()),
+                                      );
+                                    },
+                                  )
 
-                            ],
-                          ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 100)
+
+                          ],
                         ),
+                      )
+                    ],
 
-                      ],
-                    ),
                   )
+
 
               ),
 
