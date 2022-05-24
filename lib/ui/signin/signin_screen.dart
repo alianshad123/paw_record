@@ -1,8 +1,14 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:paw_record/api/api_service.dart';
 import 'package:paw_record/model/LoginRequestModel.dart';
+import 'package:paw_record/model/LoginResponseModel.dart';
 import 'package:paw_record/ui/home/home_screen.dart';
 import 'package:paw_record/ui/register/register_screen.dart';
+import 'package:http/http.dart' as http;
+import 'package:paw_record/api/ApiConstants.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -136,13 +142,15 @@ class _SignInScreenState extends State<SignInScreen> {
                                                   color: const Color(0xFF8017DA))))),
                                   onPressed: () {
 
-                                    String email = email_controller.text;
+                                    signin(email_controller.text,password_controller.text,context);
+
+                                   /* String email = email_controller.text;
                                     String password = password_controller.text;
 
                                     dynamic response= ApiService().login(
                                       email,
                                       password,
-                                    );
+                                    );*/
 
 
                                   },
@@ -203,6 +211,37 @@ class _SignInScreenState extends State<SignInScreen> {
 
   }*/
 }
+
+ signin(String email, String password, BuildContext context)  async{
+
+ /* Map data = {
+  'email':email,
+    'password':password
+  };*/
+
+
+  var data = jsonEncode( {
+    'email': email,
+    'password': password
+  });
+
+  var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.usersEndpoint);
+  var response = await http.post(url,body: data, headers: {
+  "Accept": "application/json",
+  "content-type": "application/json"});
+  if(response.statusCode ==200){
+    //LoginResponseModel _model = loginResponseModelFromJson(response.body);
+    //log(response.toString());
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) =>
+          const HomeScreen()),
+    );
+    
+  }
+
+ }
 
 Widget makeInput({label, obsureText = false}) {
   return Column(
