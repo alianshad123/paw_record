@@ -108,35 +108,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
 }
 
 Widget makeItemContainer(String label, IconData iconData) {
-  return Card(
-    child:  Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        Row(
+  return Container(
+    height: 50,
+    child: Card(
+        child:  Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            SizedBox(width : 10),
-            Icon(
-              iconData,
-              color: Color(0xFF8017DA),
+            Row(
+              children: [
+                SizedBox(width : 10),
+                Icon(
+                  iconData,
+                  color: Color(0xFF8017DA),
+                ),
+                SizedBox(width : 20),
+                Text(label,style: TextStyle (
+
+                    fontWeight: FontWeight.normal,
+                    color: Colors.black
+                ),),
+              ],
             ),
-            SizedBox(width : 20),
-            Text(label,style: TextStyle (
+            Flexible(fit: FlexFit.tight, child: SizedBox()),
+            Align(
+              alignment: Alignment.centerRight,
+              child:Icon(Icons.arrow_forward_ios_outlined,
+                color:Color(0xFFA3A2A3),
+                size: 10,) ,
+            ),
+            SizedBox(width : 10),
 
-                fontWeight: FontWeight.normal,
-                color: Colors.black
-            ),),
           ],
-        ),
-        Flexible(fit: FlexFit.tight, child: SizedBox()),
-        Align(
-          alignment: Alignment.topRight,
-          child:Icon(Icons.arrow_forward_ios_outlined,
-            color:Color(0xFFA3A2A3),
-            size: 10,) ,
-        ),
-        SizedBox(width : 10),
-
-      ],
-    )
+        )
+    ),
   );
 }

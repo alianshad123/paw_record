@@ -26,6 +26,7 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
   bool isChecklistShowing = false;
   bool isCheckBtnShowing = true;
   bool valuefirst = false;
+  bool isVaccinePressed=true;
 
 
   void showVaccine() {
@@ -34,6 +35,7 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
       visibilityMedical = false;
       visibilityDoctor = false;
       visibilityGrooming = false;
+      isVaccinePressed=true;
     });
   }
 
@@ -77,12 +79,12 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
     return Scaffold(
         appBar: AppBar(
           elevation: 0,
+          backgroundColor: Colors.transparent,
           title: Text("",
               style: TextStyle(
                 color: Colors.black,
               )),
           brightness: Brightness.light,
-          backgroundColor: Colors.transparent,
           leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
@@ -107,7 +109,83 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  Container(
+
+                  Stack(
+                    children: [
+                      Container(
+                        height: 250,
+                        decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(0.1),
+                            image: DecorationImage(
+                                image: AssetImage("images/slider_one.jpg"),
+                                fit: BoxFit.fill
+                            )
+                        ),
+                      ),
+                      Container(
+                          margin: EdgeInsets.only(top:70,left:10,right:10,bottom: 10),
+                          width: double.infinity,
+                          padding: EdgeInsets.all(5),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 100,
+                                height: 100,
+                                child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: CircleAvatar(
+                                    backgroundImage:
+                                    NetworkImage(
+                                        "https://picsum.photos/200/300?random=1"),
+                                    radius: 50.0,
+                                  ),
+                                ),
+                              ),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Dog`s Life',
+                                    style: TextStyle(
+                                        decoration: TextDecoration
+                                            .none,
+                                        color: Color(0xFFF5F4F4),
+                                        fontWeight: FontWeight
+                                            .normal,
+                                        fontSize: 25),
+                                  ),
+                                  Text(
+                                    '   Dogs knowledge sharing,irregularly \n   organised offline',
+                                    style: TextStyle(
+                                        decoration: TextDecoration
+                                            .none,
+                                        color: Color(0xFFF5F4F4),
+                                        fontWeight: FontWeight
+                                            .normal,
+                                        fontSize: 12),
+                                  )
+                                ],
+
+                              ),
+                              /* Align(
+                                     alignment: Alignment.topRight,
+                                      child: Container(
+                                        alignment: Alignment.topRight,
+                                        child: Icon(
+                                          Icons.message,
+                                          size: 12,
+                                        ),
+                                      ),
+                                    )*/
+                            ],
+
+                          )
+                      )
+
+                    ],
+                  ),
+
+                 /* Container(
                     color: Colors.black,
                     height: 200,
                     margin: EdgeInsets.only(top:50),
@@ -157,7 +235,7 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                               ],
 
                             ),
-                            /* Align(
+                            *//* Align(
                                      alignment: Alignment.topRight,
                                       child: Container(
                                         alignment: Alignment.topRight,
@@ -166,12 +244,12 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                           size: 12,
                                         ),
                                       ),
-                                    )*/
+                                    )*//*
                           ],
 
                         )
                     )
-                  ),
+                  ),*/
                   Container(
                     color: Colors.white,
                     child:Column(
@@ -199,7 +277,10 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                         child: Padding(
                                             padding: EdgeInsets.all(10),
                                             child: Text("Vaccine",
-                                                style: TextStyle(
+                                                style: isVaccinePressed? TextStyle(
+                                                  color: Color(0xFF8017DA),
+                                                  fontSize: 18,
+                                                ): TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 18,
                                                 )))),
