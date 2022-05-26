@@ -12,15 +12,14 @@ class _PetDetailScreenState extends State<PetDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF9FCFC),
       appBar: AppBar(
         elevation: 0,
+        backgroundColor: Colors.transparent,
         title: Text("",
             style: TextStyle(
               color: Colors.black,
             )),
         brightness: Brightness.light,
-        backgroundColor: const Color(0xFF24C6C6),
         leading: IconButton(
             onPressed: () {
               Navigator.pop(context);
@@ -40,22 +39,42 @@ class _PetDetailScreenState extends State<PetDetailScreen> {
           )
         ],
       ),
+        extendBodyBehindAppBar: true,
       body: Container(
           child:  SingleChildScrollView(
             child:    Column(
               children: [
-                Container(
-                  color: const Color(0xFF24C6C6),
+               /* Container(
                   margin: EdgeInsets.only(bottom: 40),
                   height: 260,
-                  alignment: Alignment.center,
                   // This is needed
                   child: Image.asset(
-                    'images/ic_dog.png',
+                    'images/detail_image.png',
                     fit: BoxFit.contain,
                     width: double.infinity,
                   ),
+                ),*/
+
+                Stack(
+                  children: [
+                    Container(
+                      height: 420,
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: AssetImage("images/detail_image.png"),
+                              fit: BoxFit.fill
+                          )
+                      ),
+                    ),
+
+
+                  ],
                 ),
+
+
+
+
+
                 Container(
                   child: Column(
                     children: [

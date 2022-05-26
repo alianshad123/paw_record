@@ -117,7 +117,7 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                         decoration: BoxDecoration(
                             color: Colors.grey.withOpacity(0.1),
                             image: DecorationImage(
-                                image: AssetImage("images/slider_one.jpg"),
+                                image: AssetImage("images/blur_img.png"),
                                 fit: BoxFit.fill
                             )
                         ),

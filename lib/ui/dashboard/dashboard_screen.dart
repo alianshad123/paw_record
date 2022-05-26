@@ -17,21 +17,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int _currentIndex = 0;
 
   List<HomeSliderModel> sliderDataList = [
-    HomeSliderModel("images/slider_one.jpg", "Take me home",
+    HomeSliderModel("images/slider_one.png", "Take me home",
         "Lorem ipsum dolor sit amet,\nlorem ipsum dolor sit amet"),
     HomeSliderModel(
-        "images/slider_two.jpg", "Take me home", "Lorem ipsum dolor sit amet"),
-    HomeSliderModel("images/slider_three.jpg", "Take me home",
+        "images/slider_one.png", "Take me home", "Lorem ipsum dolor sit amet"),
+    HomeSliderModel("images/slider_one.png", "Take me home",
         "Lorem ipsum dolor sit amet"),
   ];
 
   List<DogsImageModel> dogsDataList = [
     DogsImageModel(
-        "images/slider_one.jpg", "Troy", "Weekdays | 7:00", "Dog Walking"),
+        "images/slider_two.png", "Troy", "Weekdays | 7:00", "Dog Walking"),
     DogsImageModel(
-        "images/slider_two.jpg", "Penne", "Mondays | 19:00", "Dog Care"),
+        "images/slider_three.png", "Penne", "Mondays | 19:00", "Dog Care"),
     DogsImageModel(
-        "images/slider_three.jpg", "Troy", "Weekdays | 7:00", "Dog Walking"),
+        "images/slider_two.png", "Troy", "Weekdays | 7:00", "Dog Walking"),
   ];
 
   final _searchview = TextEditingController();
