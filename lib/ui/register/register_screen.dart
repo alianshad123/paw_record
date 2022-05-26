@@ -53,6 +53,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                child:Wrap(
                  children:[
                    Card(
+                     shape: RoundedRectangleBorder(
+                       borderRadius: BorderRadius.circular(15.0),
+                     ),
                      child: Column(
                        children: <Widget>[
 
@@ -104,7 +107,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                          style: TextStyle(
                                            color: Colors.black,
                                          ),
-                                         maxLines: 1,
+                                         maxLines: 2,
                                          overflow: TextOverflow.ellipsis,
                                        ),
                                      ),

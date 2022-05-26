@@ -18,10 +18,8 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-
   final email_controller = TextEditingController();
   final password_controller = TextEditingController();
-
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +65,9 @@ class _SignInScreenState extends State<SignInScreen> {
               child: Wrap(
                 children: [
                   Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
                     child: Column(
                       children: <Widget>[
                         Padding(
@@ -93,8 +94,6 @@ class _SignInScreenState extends State<SignInScreen> {
                                         BorderSide(color: Color(0xFF6200EE)),
                                   ),
                                 ),
-
-
                               ),
                               SizedBox(
                                 height: 10,
@@ -115,13 +114,14 @@ class _SignInScreenState extends State<SignInScreen> {
                                         BorderSide(color: Color(0xFF6200EE)),
                                   ),
                                 ),
-                                validator: (val) =>
-                                val!.length < 4 ? 'Your password is too Password too short..' : null,
+                                validator: (val) => val!.length < 4
+                                    ? 'Your password is too Password too short..'
+                                    : null,
                               ),
                               SizedBox(height: 25),
                               Align(
                                 alignment: Alignment.center,
-                                child:   TextButton(
+                                child: TextButton(
                                   child: const Text(
                                     'Sign In',
                                     style: TextStyle(
@@ -131,32 +131,29 @@ class _SignInScreenState extends State<SignInScreen> {
                                       padding: MaterialStateProperty.all<EdgeInsets>(
                                           EdgeInsets.fromLTRB(50, 10, 50, 10)),
                                       backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Color(0xFF8017DA)),
+                                          MaterialStateProperty.all<Color>(
+                                              Color(0xFF8017DA)),
                                       shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
+                                              RoundedRectangleBorder>(
                                           RoundedRectangleBorder(
                                               borderRadius:
-                                              BorderRadius.circular(20.0),
+                                                  BorderRadius.circular(20.0),
                                               side: BorderSide(
                                                   color: const Color(0xFF8017DA))))),
                                   onPressed: () {
+                                    signin(email_controller.text,
+                                        password_controller.text, context);
 
-                                    signin(email_controller.text,password_controller.text,context);
-
-                                   /* String email = email_controller.text;
+                                    /* String email = email_controller.text;
                                     String password = password_controller.text;
 
                                     dynamic response= ApiService().login(
                                       email,
                                       password,
                                     );*/
-
-
                                   },
                                 ),
                               )
-
                             ],
                           ),
                         ),
@@ -212,36 +209,28 @@ class _SignInScreenState extends State<SignInScreen> {
   }*/
 }
 
- signin(String email, String password, BuildContext context)  async{
-
- /* Map data = {
+signin(String email, String password, BuildContext context) async {
+  /* Map data = {
   'email':email,
     'password':password
   };*/
 
-
-  var data = jsonEncode( {
-    'email': email,
-    'password': password
-  });
+  var data = jsonEncode({'email': email, 'password': password});
 
   var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.usersEndpoint);
-  var response = await http.post(url,body: data, headers: {
-  "Accept": "application/json",
-  "content-type": "application/json"});
-  if(response.statusCode ==200){
+  var response = await http.post(url, body: data, headers: {
+    "Accept": "application/json",
+    "content-type": "application/json"
+  });
+  if (response.statusCode == 200) {
     //LoginResponseModel _model = loginResponseModelFromJson(response.body);
     //log(response.toString());
     Navigator.push(
       context,
-      MaterialPageRoute(
-          builder: (context) =>
-          const HomeScreen()),
+      MaterialPageRoute(builder: (context) => const HomeScreen()),
     );
-    
   }
-
- }
+}
 
 Widget makeInput({label, obsureText = false}) {
   return Column(

@@ -29,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return Container(
         color: const Color(0xFFFFFFFF),
         child: Image.asset(
-            'images/paw_recd.png',
+            'images/paw_record.png',
             width: 200,
             height: 100,
         )
