@@ -1,5 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:paw_record/api/ApiConstants.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:paw_record/ui/login/login_screen.dart';
+import 'package:paw_record/ui/signin/signin_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -11,6 +18,11 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   bool agree = false;
   bool agree_ = false;
+  final fullname_controller = TextEditingController();
+  final email_controller = TextEditingController();
+  final password_controller = TextEditingController();
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,9 +77,63 @@ class _RegisterScreenState extends State<RegisterScreen> {
                            ),
                            child: Column(
                              children: [
+                               SizedBox(height: 10,),
+                               TextFormField(
+                                 keyboardType: TextInputType.name,
+                                 controller: fullname_controller,
+                                 decoration: InputDecoration(
+                                   labelText: "Full name",
+                                   labelStyle: TextStyle(
+                                     color: Color(0xFF6200EE),
+                                   ),
+                                   suffixIcon: Icon(
+                                     Icons.check_circle,
+                                   ),
+                                   enabledBorder: UnderlineInputBorder(
+                                     borderSide: BorderSide(color: Color(0xFF6200EE)),
+                                   ),
+                                 ),
+                               ),
+                               SizedBox(height: 5,),
+                               TextFormField(
+                                 keyboardType: TextInputType.emailAddress,
+                                 controller: email_controller,
+                                 decoration: InputDecoration(
+                                   labelText: "Email",
+                                   labelStyle: TextStyle(
+                                     color: Color(0xFF6200EE),
+                                   ),
+                                   suffixIcon: Icon(
+                                     Icons.check_circle,
+                                   ),
+                                   enabledBorder: UnderlineInputBorder(
+                                     borderSide: BorderSide(color: Color(0xFF6200EE)),
+                                   ),
+                                 ),
+                               ),
+                               SizedBox(height: 5,),
+                               TextFormField(
+                                 keyboardType: TextInputType.visiblePassword,
+                                 controller: password_controller,
+                                 decoration: InputDecoration(
+                                   labelText: "Password",
+                                   labelStyle: TextStyle(
+                                     color: Color(0xFF6200EE),
+                                   ),
+                                   suffixIcon: Icon(
+                                     Icons.check_circle,
+                                   ),
+                                   enabledBorder: UnderlineInputBorder(
+                                     borderSide: BorderSide(color: Color(0xFF6200EE)),
+                                   ),
+                                 ),
+                               ),
+                              /* SizedBox(height: 5,),
+
+
                                makeInput(label: "Full name",obsureText: true),
                                makeInput(label: "Email"),
-                               makeInput(label: "Password",obsureText: true),
+                               makeInput(label: "Password",obsureText: true),*/
                                SizedBox(height: 15),
                                Row(
                                  children: [
@@ -135,7 +201,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                      )
                                  ),
                                  onPressed: () {
-                                   //signup screen
+                                   signUp(fullname_controller.text,email_controller.text,
+                                       password_controller.text, context);
                                  },
                                )
 
@@ -208,4 +275,33 @@ Widget makeInput({label,obsureText = false}){
 
     ],
   );
+}
+
+
+signUp(String fullname,String email, String password, BuildContext context) async {
+  /* Map data = {
+  'email':email,
+    'password':password
+  };*/
+
+  var data = jsonEncode({'full_name': fullname,'email': email, 'password': password});
+
+  var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.registration);
+  var response = await http.post(url, body: data, headers: {
+    "Accept": "application/json",
+    "content-type": "application/json"
+  });
+  if (response.statusCode == 200) {
+    //LoginResponseModel _model = loginResponseModelFromJson(response.body);
+    //log(response.toString());
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SignInScreen()),
+    );
+  }else{
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SignInScreen()),
+    );
+  }
 }

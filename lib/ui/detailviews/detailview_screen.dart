@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:paw_record/ui/dashboard/dashboard_screen.dart';
 import 'package:paw_record/ui/petdetail/petdetail_screen.dart';
@@ -26,7 +27,21 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
   bool isChecklistShowing = false;
   bool isCheckBtnShowing = true;
   bool valuefirst = false;
+  bool valueSecond = false;
+  bool valueThird = false;
+  bool valueForth = false;
+  bool valueFifth = false;
+  bool valueSixth = false;
+  bool valueSeventh = false;
+  bool valueEighth = false;
+  bool valueNineth = false;
+  bool valueTenth = false;
+
+
   bool isVaccinePressed=true;
+  bool isMedicalPressed=false;
+  bool isDoctorPressed=false;
+  bool isGroomingPressed=false;
 
 
   void showVaccine() {
@@ -35,7 +50,10 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
       visibilityMedical = false;
       visibilityDoctor = false;
       visibilityGrooming = false;
-      isVaccinePressed=true;
+       isVaccinePressed=true;
+       isMedicalPressed=false;
+       isDoctorPressed=false;
+       isGroomingPressed=false;
     });
   }
 
@@ -45,6 +63,10 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
       visibilityMedical = true;
       visibilityDoctor = false;
       visibilityGrooming = false;
+      isVaccinePressed=false;
+      isMedicalPressed=true;
+      isDoctorPressed=false;
+      isGroomingPressed=false;
     });
   }
 
@@ -54,6 +76,11 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
       visibilityMedical = false;
       visibilityDoctor = false;
       visibilityGrooming = true;
+
+      isVaccinePressed=false;
+      isMedicalPressed=false;
+      isDoctorPressed=false;
+      isGroomingPressed=true;
     });
   }
 
@@ -63,6 +90,11 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
       visibilityMedical = false;
       visibilityDoctor = true;
       visibilityGrooming = false;
+
+      isVaccinePressed=false;
+      isMedicalPressed=false;
+      isDoctorPressed=true;
+      isGroomingPressed=false;
     });
   }
 
@@ -142,7 +174,7 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                 ),
                               ),
                               Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     'Dog`s Life',
@@ -155,7 +187,7 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                         fontSize: 25),
                                   ),
                                   Text(
-                                    '   Dogs knowledge sharing,irregularly \n   organised offline',
+                                    ' Dogs knowledge sharing,irregularly \n organised offline exchnages and \n group buying',
                                     style: TextStyle(
                                         decoration: TextDecoration
                                             .none,
@@ -167,16 +199,7 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                 ],
 
                               ),
-                              /* Align(
-                                     alignment: Alignment.topRight,
-                                      child: Container(
-                                        alignment: Alignment.topRight,
-                                        child: Icon(
-                                          Icons.message,
-                                          size: 12,
-                                        ),
-                                      ),
-                                    )*/
+
                             ],
 
                           )
@@ -185,71 +208,7 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                     ],
                   ),
 
-                 /* Container(
-                    color: Colors.black,
-                    height: 200,
-                    margin: EdgeInsets.only(top:50),
-                    child:Container(
-                        height: 150,
-                        width: double.infinity,
-                        padding: EdgeInsets.all(5),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 100,
-                              height: 100,
-                              child: Container(
-                                alignment: Alignment.centerLeft,
-                                child: CircleAvatar(
-                                  backgroundImage:
-                                  NetworkImage(
-                                      "https://picsum.photos/200/300?random=1"),
-                                  radius: 50.0,
-                                ),
-                              ),
-                            ),
-                            Column(
 
-                              children: [
-                                SizedBox(height: 50,),
-                                Text(
-                                  'Dog`s Life',
-                                  style: TextStyle(
-                                      decoration: TextDecoration
-                                          .none,
-                                      color: Color(0xFFF5F4F4),
-                                      fontWeight: FontWeight
-                                          .normal,
-                                      fontSize: 25),
-                                ),
-                                Text(
-                                  '   Dogs knowledge sharing,irregularly \n   organised offline',
-                                  style: TextStyle(
-                                      decoration: TextDecoration
-                                          .none,
-                                      color: Color(0xFFF5F4F4),
-                                      fontWeight: FontWeight
-                                          .normal,
-                                      fontSize: 12),
-                                )
-                              ],
-
-                            ),
-                            *//* Align(
-                                     alignment: Alignment.topRight,
-                                      child: Container(
-                                        alignment: Alignment.topRight,
-                                        child: Icon(
-                                          Icons.message,
-                                          size: 12,
-                                        ),
-                                      ),
-                                    )*//*
-                          ],
-
-                        )
-                    )
-                  ),*/
                   Container(
                     color: Colors.white,
                     child:Column(
@@ -291,7 +250,10 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                         child: Padding(
                                             padding: EdgeInsets.all(10),
                                             child: Text("Medical",
-                                                style: TextStyle(
+                                                style: isMedicalPressed? TextStyle(
+                                                  color: Color(0xFF8017DA),
+                                                  fontSize: 18,
+                                                ): TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 18,
                                                 )))),
@@ -302,7 +264,10 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                         child: Padding(
                                             padding: EdgeInsets.all(10),
                                             child: Text("Doctor",
-                                                style: TextStyle(
+                                                style: isDoctorPressed? TextStyle(
+                                                  color: Color(0xFF8017DA),
+                                                  fontSize: 18,
+                                                ): TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 18,
                                                 )))),
@@ -313,16 +278,10 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                         child: Padding(
                                             padding: EdgeInsets.all(10),
                                             child: Text("Grooming",
-                                                style: TextStyle(
-                                                  color: Colors.black,
+                                                style: isGroomingPressed? TextStyle(
+                                                  color: Color(0xFF8017DA),
                                                   fontSize: 18,
-                                                )))),
-                                    GestureDetector(
-                                        onTap: () {},
-                                        child: Padding(
-                                            padding: EdgeInsets.all(10),
-                                            child: Text("Vaccine",
-                                                style: TextStyle(
+                                                ): TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 18,
                                                 )))),
@@ -335,7 +294,7 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                         Stack(
                           children: [
                             Visibility(
-                                maintainSize: true,
+                                maintainSize: false,
                                 maintainAnimation: true,
                                 maintainState: true,
                                 visible: visibilityVaccine,
@@ -345,8 +304,7 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                   child: Column(
                                     children: [
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .spaceBetween,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Card(
                                             color: Color(0xFFEEF6FD),
@@ -449,6 +407,7 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                       SizedBox(height: 10,),
                                       Card(
                                           child: Container(
+                                              margin:EdgeInsets.only(left:10.0,top:0.0,right:10.0,bottom:0.0),
                                               height: 50,
                                               width: double.infinity,
                                               padding: EdgeInsets.all(5),
@@ -468,6 +427,7 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                                     ),
                                                   ),
                                                   Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
                                                       Text(
                                                         'Ali Anshad',
@@ -519,6 +479,7 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                               fontSize: 20),
                                         ),
                                       ),
+                                      SizedBox(height: 10,),
                                       Card(
                                           color: Color(0xFFEED8FF),
                                           margin: EdgeInsets.all(5),
@@ -527,12 +488,13 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                               width: double.infinity,
                                               padding: EdgeInsets.all(5),
                                               child: Row(
+
                                                 children: [
                                                   Card(
                                                       color: Color(0xFF7D1BC6),
                                                       margin: EdgeInsets.all(8),
                                                       child: Container(
-                                                          height: 80,
+                                                         /* height: 80,
                                                           width: 80,
                                                           padding: EdgeInsets.all(8),
                                                           child: Icon(
@@ -540,37 +502,46 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                                                 .format_strikethrough_outlined,
                                                             size: 20,
                                                             color: Colors.white,
+                                                          )*/
+                                                        height: 80,
+                                                        width: 80,
+                                                        padding: EdgeInsets.all(8),
+                                                          child: Image.asset(
+                                                            'images/ic_syringe.png',
+                                                            width: 40,
+                                                            height: 40,
                                                           )
-
                                                       )
                                                   ),
+
                                                   Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                          'Vitamin B12',
+                                                          style: TextStyle(
+                                                              decoration: TextDecoration
+                                                                  .none,
+                                                              color: Color(0xFF8017DA),
+                                                              fontWeight: FontWeight
+                                                                  .normal,
+                                                              fontSize: 15),
+                                                        ),
+                                                        Text(
+                                                          'Mon 24 March',
+                                                          style: TextStyle(
+                                                              decoration: TextDecoration
+                                                                  .none,
+                                                              fontWeight: FontWeight
+                                                                  .normal,
+                                                              fontSize: 8),
+                                                        )
+                                                      ],
 
-                                                    mainAxisAlignment: MainAxisAlignment
-                                                        .center,
-                                                    children: [
-                                                      Text(
-                                                        'Ali Anshad',
-                                                        style: TextStyle(
-                                                            decoration: TextDecoration
-                                                                .none,
-                                                            color: Color(0xFF8017DA),
-                                                            fontWeight: FontWeight
-                                                                .normal,
-                                                            fontSize: 12),
-                                                      ),
-                                                      Text(
-                                                        'Pet owner',
-                                                        style: TextStyle(
-                                                            decoration: TextDecoration
-                                                                .none,
-                                                            fontWeight: FontWeight
-                                                                .normal,
-                                                            fontSize: 8),
-                                                      )
-                                                    ],
+                                                    ),
 
-                                                  ),
+
 
                                                 ],
 
@@ -668,7 +639,8 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                                                 });
                                                               },
                                                             ),
-                                                            Text('how you handled it. ',style: TextStyle(fontSize: 17.0), ),
+                                                            Text('how you handled it. ',
+                                                              style: TextStyle(fontSize: 17.0),),
 
                                                           ],
                                                         ),
@@ -677,14 +649,16 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                                             Checkbox(
                                                               checkColor: Color(0xFF8017DA),
                                                               activeColor: Color(0xFFC3C2C4),
-                                                              value: this.valuefirst,
+                                                              value: this.valueSecond,
                                                               onChanged: (bool? value) {
                                                                 setState(() {
-                                                                  this.valuefirst = value!;
+                                                                  this.valueSecond = value!;
                                                                 });
                                                               },
                                                             ),
-                                                            Text('Scheduled a zoom call with  pets team. ',style: TextStyle(fontSize: 17.0), ),
+                                                            Text(
+                                                              'Scheduled a zoom call with  pets team. ',
+                                                              style: TextStyle(fontSize: 17.0),),
 
                                                           ],
                                                         ),
@@ -693,14 +667,15 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                                             Checkbox(
                                                               checkColor: Color(0xFF8017DA),
                                                               activeColor: Color(0xFFC3C2C4),
-                                                              value: this.valuefirst,
+                                                              value: this.valueThird,
                                                               onChanged: (bool? value) {
                                                                 setState(() {
-                                                                  this.valuefirst = value!;
+                                                                  this.valueThird = value!;
                                                                 });
                                                               },
                                                             ),
-                                                            Text('Push latest photo. ',style: TextStyle(fontSize: 17.0), ),
+                                                            Text('Push latest photo. ',
+                                                              style: TextStyle(fontSize: 17.0),),
 
                                                           ],
                                                         ),
@@ -709,14 +684,16 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                                             Checkbox(
                                                               checkColor: Color(0xFF8017DA),
                                                               activeColor: Color(0xFFC3C2C4),
-                                                              value: this.valuefirst,
+                                                              value: this.valueForth,
                                                               onChanged: (bool? value) {
                                                                 setState(() {
-                                                                  this.valuefirst = value!;
+                                                                  this.valueForth = value!;
                                                                 });
                                                               },
                                                             ),
-                                                            Text('Do you have any pet specific training. ',style: TextStyle(fontSize: 17.0), ),
+                                                            Text(
+                                                              'Do you have any pet specific training. ',
+                                                              style: TextStyle(fontSize: 17.0),),
 
                                                           ],
                                                         ),
@@ -725,14 +702,15 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                                             Checkbox(
                                                               checkColor: Color(0xFF8017DA),
                                                               activeColor: Color(0xFFC3C2C4),
-                                                              value: this.valuefirst,
+                                                              value: this.valueFifth,
                                                               onChanged: (bool? value) {
                                                                 setState(() {
-                                                                  this.valuefirst = value!;
+                                                                  this.valueFifth = value!;
                                                                 });
                                                               },
                                                             ),
-                                                            Text('Will they meet your dog first ',style: TextStyle(fontSize: 17.0), ),
+                                                            Text('Will they meet your dog first ',
+                                                              style: TextStyle(fontSize: 17.0),),
 
                                                           ],
                                                         ),
@@ -741,14 +719,15 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                                             Checkbox(
                                                               checkColor: Color(0xFF8017DA),
                                                               activeColor: Color(0xFFC3C2C4),
-                                                              value: this.valuefirst,
+                                                              value: this.valueSixth,
                                                               onChanged: (bool? value) {
                                                                 setState(() {
-                                                                  this.valuefirst = value!;
+                                                                  this.valueSixth = value!;
                                                                 });
                                                               },
                                                             ),
-                                                            Text('how you handled it. ',style: TextStyle(fontSize: 17.0), ),
+                                                            Text('how you handled it. ',
+                                                              style: TextStyle(fontSize: 17.0),),
 
                                                           ],
                                                         ),
@@ -757,14 +736,16 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                                             Checkbox(
                                                               checkColor: Color(0xFF8017DA),
                                                               activeColor: Color(0xFFC3C2C4),
-                                                              value: this.valuefirst,
+                                                              value: this.valueSeventh,
                                                               onChanged: (bool? value) {
                                                                 setState(() {
-                                                                  this.valuefirst = value!;
+                                                                  this.valueSeventh = value!;
                                                                 });
                                                               },
                                                             ),
-                                                            Text('Scheduled a zoom call with  pets team. ',style: TextStyle(fontSize: 17.0), ),
+                                                            Text(
+                                                              'Scheduled a zoom call with  pets team. ',
+                                                              style: TextStyle(fontSize: 17.0),),
 
                                                           ],
                                                         ),
@@ -773,14 +754,15 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                                             Checkbox(
                                                               checkColor: Color(0xFF8017DA),
                                                               activeColor: Color(0xFFC3C2C4),
-                                                              value: this.valuefirst,
+                                                              value: this.valueEighth,
                                                               onChanged: (bool? value) {
                                                                 setState(() {
-                                                                  this.valuefirst = value!;
+                                                                  this.valueEighth = value!;
                                                                 });
                                                               },
                                                             ),
-                                                            Text('Push latest photo. ',style: TextStyle(fontSize: 17.0), ),
+                                                            Text('Push latest photo. ',
+                                                              style: TextStyle(fontSize: 17.0),),
 
                                                           ],
                                                         ),
@@ -789,14 +771,16 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                                             Checkbox(
                                                               checkColor: Color(0xFF8017DA),
                                                               activeColor: Color(0xFFC3C2C4),
-                                                              value: this.valuefirst,
+                                                              value: this.valueNineth,
                                                               onChanged: (bool? value) {
                                                                 setState(() {
-                                                                  this.valuefirst = value!;
+                                                                  this.valueNineth = value!;
                                                                 });
                                                               },
                                                             ),
-                                                            Text('Do you have any pet specific training. ',style: TextStyle(fontSize: 17.0), ),
+                                                            Text(
+                                                              'Do you have any pet specific training. ',
+                                                              style: TextStyle(fontSize: 17.0),),
 
                                                           ],
                                                         ),
@@ -805,30 +789,15 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                                             Checkbox(
                                                               checkColor: Color(0xFF8017DA),
                                                               activeColor: Color(0xFFC3C2C4),
-                                                              value: this.valuefirst,
+                                                              value: this.valueTenth,
                                                               onChanged: (bool? value) {
                                                                 setState(() {
-                                                                  this.valuefirst = value!;
+                                                                  this.valueTenth = value!;
                                                                 });
                                                               },
                                                             ),
-                                                            Text('Will they meet your dog first ',style: TextStyle(fontSize: 17.0), ),
-
-                                                          ],
-                                                        ),
-                                                        Row(
-                                                          children: [
-                                                            Checkbox(
-                                                              checkColor: Color(0xFF8017DA),
-                                                              activeColor: Color(0xFFC3C2C4),
-                                                              value: this.valuefirst,
-                                                              onChanged: (bool? value) {
-                                                                setState(() {
-                                                                  this.valuefirst = value!;
-                                                                });
-                                                              },
-                                                            ),
-                                                            Text('how you handled it. ',style: TextStyle(fontSize: 17.0), ),
+                                                            Text('Will they meet your dog first ',
+                                                              style: TextStyle(fontSize: 17.0),),
 
                                                           ],
                                                         ),
@@ -886,18 +855,17 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                   ),
                                 )),
                             Visibility(
-                                maintainSize: true,
+                                maintainSize: false,
                                 maintainAnimation: true,
                                 maintainState: true,
                                 visible: visibilityMedical,
                                 child: Container(
                                   margin: EdgeInsets.only(
-                                      top: 20, bottom: 10, left: 10, right: 10),
+                                      top: 20, bottom: 10, left: 20, right: 10),
                                   child: Column(
                                     children: [
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .spaceBetween,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Card(
                                             color: Color(0xFFEEF6FD),
@@ -998,8 +966,10 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                         ],
                                       ),
                                       SizedBox(height: 10,),
+
                                       Card(
                                           child: Container(
+                                              margin:EdgeInsets.only(left:10.0,top:0.0,right:10.0,bottom:0.0),
                                               height: 50,
                                               width: double.infinity,
                                               padding: EdgeInsets.all(5),
@@ -1019,6 +989,7 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                                     ),
                                                   ),
                                                   Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
                                                       Text(
                                                         'Ali Anshad',
@@ -1068,7 +1039,7 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                               style: TextStyle(
                                                   color: Colors.black, fontSize: 16))
                                       ),
-                                      SizedBox(height: 10),
+                                      SizedBox(height: 20),
                                       Container(
                                           alignment: Alignment.topLeft,
                                           child: Text(
@@ -1078,7 +1049,7 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                               style: TextStyle(
                                                   color: Colors.black, fontSize: 16))
                                       ),
-                                      SizedBox(height: 10),
+                                      SizedBox(height: 20),
                                       Container(
                                           alignment: Alignment.topLeft,
                                           child: Text(
@@ -1088,7 +1059,7 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                               style: TextStyle(
                                                   color: Colors.black, fontSize: 16))
                                       ),
-                                      SizedBox(height: 10),
+                                      SizedBox(height: 20),
                                       Container(
                                           alignment: Alignment.topLeft,
                                           child: Text(
@@ -1098,7 +1069,7 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                               style: TextStyle(
                                                   color: Colors.black, fontSize: 16))
                                       ),
-                                      SizedBox(height: 10),
+                                      SizedBox(height: 20),
                                       Container(
                                           alignment: Alignment.topLeft,
                                           child: Text(
@@ -1108,7 +1079,7 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                               style: TextStyle(
                                                   color: Colors.black, fontSize: 16))
                                       ),
-                                      SizedBox(height: 10),
+                                      SizedBox(height: 20),
                                       Container(
                                           alignment: Alignment.topLeft,
                                           child: Text(
@@ -1118,13 +1089,13 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                               style: TextStyle(
                                                   color: Colors.black, fontSize: 16))
                                       ),
-                                      SizedBox(height: 10),
+                                      SizedBox(height: 20),
 
                                     ],
                                   ),
                                 )),
                             Visibility(
-                                maintainSize: true,
+                                maintainSize: false,
                                 maintainAnimation: true,
                                 maintainState: true,
                                 visible: visibilityDoctor,
@@ -1134,8 +1105,7 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                   child: Column(
                                     children: [
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .spaceBetween,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Card(
                                             color: Color(0xFFEEF6FD),
@@ -1238,6 +1208,7 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                       SizedBox(height: 10,),
                                       Card(
                                           child: Container(
+                                              margin:EdgeInsets.only(left:10.0,top:0.0,right:10.0,bottom:0.0),
                                               height: 50,
                                               width: double.infinity,
                                               padding: EdgeInsets.all(5),
@@ -1257,6 +1228,7 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                                     ),
                                                   ),
                                                   Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
                                                       Text(
                                                         'Ali Anshad',
@@ -1320,6 +1292,7 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                                     Container(
                                                         margin:EdgeInsets.fromLTRB(10, 0, 10, 0) ,
                                                         child:  Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
                                                           children: [
                                                             Text(
                                                               'Dr.Ravi Kumar',
@@ -1352,8 +1325,8 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                                     )
                                                   ]
                                               ),
-                                              Card(
-
+                                              Card
+                                                (
                                                   color: Color(0xFFF8F7FB),
                                                   margin: EdgeInsets.fromLTRB(10,20,10,20),
                                                   child:Column(
@@ -1371,28 +1344,31 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                                                 child: Container(
                                                                   alignment: Alignment.centerLeft,
                                                                   child: Icon(
-                                                                    Icons.message,
+                                                                    Icons.view_compact_outlined,
                                                                     size: 12,
                                                                   ),
                                                                 ),
                                                               ),
                                                               Column(
+                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                                 children: [
                                                                   Text(
-                                                                    'Ali Anshad',
+                                                                    'Vetinery Clinic',
                                                                     style: TextStyle(
                                                                         decoration: TextDecoration
                                                                             .none,
-                                                                        color: Color(0xFF8017DA),
+                                                                        color: Colors.black,
                                                                         fontWeight: FontWeight
                                                                             .normal,
                                                                         fontSize: 12),
                                                                   ),
                                                                   Text(
-                                                                    'Pet owner',
+                                                                    '141 NMG Road,Bangalore',
                                                                     style: TextStyle(
                                                                         decoration: TextDecoration
                                                                             .none,
+                                                                        color: Colors.black,
                                                                         fontWeight: FontWeight
                                                                             .normal,
                                                                         fontSize: 8),
@@ -1400,16 +1376,7 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                                                 ],
 
                                                               ),
-                                                              /* Align(
-                                     alignment: Alignment.topRight,
-                                      child: Container(
-                                        alignment: Alignment.topRight,
-                                        child: Icon(
-                                          Icons.message,
-                                          size: 12,
-                                        ),
-                                      ),
-                                    )*/
+
                                                             ],
 
                                                           )
@@ -1426,24 +1393,26 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                                                 child: Container(
                                                                   alignment: Alignment.centerLeft,
                                                                   child: Icon(
-                                                                    Icons.message,
+                                                                    Icons.access_time ,
                                                                     size: 12,
                                                                   ),
                                                                 ),
                                                               ),
                                                               Column(
+                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                                 children: [
                                                                   Text(
-                                                                    'Ali Anshad',
+                                                                    'Wed 9 Sep --10:30am',
                                                                     style: TextStyle(
                                                                         decoration: TextDecoration
                                                                             .none,
-                                                                        color: Color(0xFF8017DA),
+                                                                        color: Colors.black,
                                                                         fontWeight: FontWeight
                                                                             .normal,
                                                                         fontSize: 12),
                                                                   ),
-                                                                  Text(
+                                                                 /* Text(
                                                                     'Pet owner',
                                                                     style: TextStyle(
                                                                         decoration: TextDecoration
@@ -1451,7 +1420,7 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                                                         fontWeight: FontWeight
                                                                             .normal,
                                                                         fontSize: 8),
-                                                                  )
+                                                                  )*/
                                                                 ],
 
                                                               ),
@@ -1485,7 +1454,7 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                   ),
                                 )),
                             Visibility(
-                                maintainSize: true,
+                                maintainSize: false,
                                 maintainAnimation: true,
                                 maintainState: true,
                                 visible: visibilityGrooming,
@@ -1677,6 +1646,7 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
                                                 Container(
                                                     margin:EdgeInsets.fromLTRB(10, 0, 10, 0) ,
                                                     child:  Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
                                                         Text(
                                                           'Dr.Ravi Kumar',

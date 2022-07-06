@@ -269,6 +269,9 @@ class DogsImageView extends StatelessWidget {
                             color: Colors.white),
                       ),
                     ),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Align(
                       alignment: Alignment.bottomLeft,
                       child: Row(

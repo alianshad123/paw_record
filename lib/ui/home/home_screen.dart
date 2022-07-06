@@ -70,13 +70,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
                 icon: pageIndex == 1
                     ? const Icon(
-                  Icons.work_rounded,
+                  Icons.pets,
                   color: Color(0xFF8017DA),
 
                   size: 25,
                 )
                     : const Icon(
-                  Icons.work_outline_outlined,
+                  Icons.pets,
                   color:Color(0xFF656566),
                   size: 25,
                 ),

@@ -143,6 +143,10 @@ class _SignInScreenState extends State<SignInScreen> {
                                   onPressed: () {
                                     signin(email_controller.text,
                                         password_controller.text, context);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => const HomeScreen()),
+                                    );
 
                                     /* String email = email_controller.text;
                                     String password = password_controller.text;
@@ -210,10 +214,6 @@ class _SignInScreenState extends State<SignInScreen> {
 }
 
 signin(String email, String password, BuildContext context) async {
-  /* Map data = {
-  'email':email,
-    'password':password
-  };*/
 
   var data = jsonEncode({'email': email, 'password': password});
 
@@ -225,6 +225,11 @@ signin(String email, String password, BuildContext context) async {
   if (response.statusCode == 200) {
     //LoginResponseModel _model = loginResponseModelFromJson(response.body);
     //log(response.toString());
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const HomeScreen()),
+    );
+  }else{
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const HomeScreen()),
