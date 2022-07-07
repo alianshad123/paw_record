@@ -1,14 +1,11 @@
 import 'dart:convert';
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:paw_record/api/api_service.dart';
-import 'package:paw_record/model/LoginRequestModel.dart';
 import 'package:paw_record/model/LoginResponseModel.dart';
 import 'package:paw_record/ui/home/home_screen.dart';
 import 'package:paw_record/ui/register/register_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:paw_record/api/ApiConstants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -143,10 +140,6 @@ class _SignInScreenState extends State<SignInScreen> {
                                   onPressed: () {
                                     signin(email_controller.text,
                                         password_controller.text, context);
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => const HomeScreen()),
-                                    );
 
                                     /* String email = email_controller.text;
                                     String password = password_controller.text;
@@ -214,7 +207,6 @@ class _SignInScreenState extends State<SignInScreen> {
 }
 
 signin(String email, String password, BuildContext context) async {
-
   var data = jsonEncode({'email': email, 'password': password});
 
   var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.usersEndpoint);
@@ -223,18 +215,22 @@ signin(String email, String password, BuildContext context) async {
     "content-type": "application/json"
   });
   if (response.statusCode == 200) {
-    //LoginResponseModel _model = loginResponseModelFromJson(response.body);
-    //log(response.toString());
+    LoginResponseModel _model = loginResponseModelFromJson(response.body);
+    _model.data?.token;
+    save(_model.data?.token);
+
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const HomeScreen()),
     );
-  }else{
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const HomeScreen()),
-    );
+  } else {
+    throw Exception('Unexpected error occured!');
   }
+}
+
+save(String? token) async {
+  var prefs = await SharedPreferences.getInstance();
+  prefs.setString("token", token!);
 }
 
 Widget makeInput({label, obsureText = false}) {

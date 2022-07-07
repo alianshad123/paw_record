@@ -488,8 +488,7 @@ registerPet(String petname,String species, String breed,String size,String addre
     "content-type": "application/json"
   });
   if (response.statusCode == 200) {
-    //LoginResponseModel _model = loginResponseModelFromJson(response.body);
-    //log(response.toString());
+
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const HomeScreen()),

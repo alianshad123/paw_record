@@ -279,10 +279,6 @@ Widget makeInput({label,obsureText = false}){
 
 
 signUp(String fullname,String email, String password, BuildContext context) async {
-  /* Map data = {
-  'email':email,
-    'password':password
-  };*/
 
   var data = jsonEncode({'full_name': fullname,'email': email, 'password': password});
 
@@ -299,9 +295,9 @@ signUp(String fullname,String email, String password, BuildContext context) asyn
       MaterialPageRoute(builder: (context) => const SignInScreen()),
     );
   }else{
-    Navigator.push(
+    /*Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const SignInScreen()),
-    );
+    );*/
   }
 }

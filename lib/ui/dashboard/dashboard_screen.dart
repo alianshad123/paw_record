@@ -1,10 +1,16 @@
 import 'package:flutter/cupertino.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:paw_record/api/ApiConstants.dart';
+import 'package:paw_record/model/BannerDataModel.dart';
 import 'package:paw_record/model/DogsImageModel.dart';
 import 'package:paw_record/model/HomeSliderModel.dart';
 import 'package:paw_record/ui/addpet/addpet_screen.dart';
 import 'package:paw_record/ui/petdetail/petdetail_screen.dart';
+import 'package:http/http.dart' as http;
+import 'package:paw_record/api/ApiConstants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -12,8 +18,15 @@ class DashboardScreen extends StatefulWidget {
   @override
   _DashboardScreenState createState() => _DashboardScreenState();
 }
-
+late List<Data> bannerDataList;
 class _DashboardScreenState extends State<DashboardScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+      getBanners(context);
+  }
+
   int _currentIndex = 0;
 
   List<HomeSliderModel> sliderDataList = [
@@ -24,6 +37,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     HomeSliderModel("images/slider_one.png", "Take me home",
         "Lorem ipsum dolor sit amet"),
   ];
+
+
 
   List<DogsImageModel> dogsDataList = [
     DogsImageModel(
@@ -85,7 +100,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: Column(
                 children: [
                   CarouselSlider.builder(
-                    itemCount: sliderDataList.length,
+                    itemCount: bannerDataList.length,
                     options: CarouselOptions(
                         autoPlay: true,
                         onPageChanged: (index, reason) {
@@ -94,13 +109,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           });
                         }),
                     itemBuilder: (context, index, realIndex) {
-                      return SliderImageView(sliderDataList[index]);
+                      return SliderImageView(bannerDataList[index]);
                     },
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: sliderDataList.map((url) {
-                      int index = sliderDataList.indexOf(url);
+                    children: bannerDataList.map((url) {
+                      int index = bannerDataList.indexOf(url);
                       return Container(
                         width: 8.0,
                         height: 8.0,
@@ -137,6 +152,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 }
 
+void getBanners(BuildContext context) async {
+  var prefs = await SharedPreferences.getInstance();
+  var token =prefs.getString("token");
+
+    var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.listBanner);
+    var response = await http.get(url,  headers: {
+      "Accept": "application/json",
+      "content-type": "application/json",
+      "Authorization": "Bearer $token"
+    });
+    if (response.statusCode == 200) {
+      BannerDataModel _model = bannerModelFromJson(response.body);
+      bannerDataList = _model.data;
+
+    } else {}
+
+}
+
 Widget _createSearchView() {
   var _searchview;
   return new Container(
@@ -157,7 +190,7 @@ Widget _createSearchView() {
 }
 
 class SliderImageView extends StatelessWidget {
-  HomeSliderModel sliderData;
+  Data sliderData;
 
   SliderImageView(this.sliderData);
 
@@ -169,7 +202,7 @@ class SliderImageView extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8.0),
         image: DecorationImage(
-          image: AssetImage(sliderData.imageUrl),
+          image: NetworkImage(sliderData.imgPath.imageUrl),
           fit: BoxFit.cover,
         ),
       ),
@@ -192,7 +225,7 @@ class SliderImageView extends StatelessWidget {
                 Align(
                   alignment: Alignment.topLeft,
                   child: Text(
-                    sliderData.details,
+                    sliderData.image,
                     style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.normal,

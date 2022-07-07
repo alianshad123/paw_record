@@ -3,4 +3,5 @@ class ApiConstants {
   static String usersEndpoint = '/login';
   static String registration = '/registration';
   static String register_pet = '/pets';
+  static String listBanner = '/listBanner';
 }
