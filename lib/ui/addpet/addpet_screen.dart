@@ -8,6 +8,7 @@ import 'package:paw_record/ui/signin/signin_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:paw_record/ui/utils/ImageFromGalleryEx.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 enum ImageSourceType { gallery, camera }
 class AddPetScreen extends StatefulWidget {
@@ -412,7 +413,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
 
                             registerPet(petname_controller.text,species_controller.text,
                                 breed_controller.text, size_controller.text,address_controller.text,
-                                dob_controller.text,_image, context);
+                                dob_controller.text,_image.toString(), context);
 
                             // Navigator.push(
                             //   context,
@@ -480,12 +481,15 @@ Widget makeAdditionalOptions({label, isSWitch}) {
 }
 
 registerPet(String petname,String species, String breed,String size,String address,String dob,String image, BuildContext context) async {
+  var prefs = await SharedPreferences.getInstance();
+  var token =prefs.getString("token");
   var data = jsonEncode({'name': petname,'species': species, 'breed': breed,'size': size,'address': address, 'dob': dob,'img':image});
 
   var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.register_pet);
   var response = await http.post(url, body: data, headers: {
     "Accept": "application/json",
-    "content-type": "application/json"
+    "content-type": "application/json",
+    "Authorization": "Bearer $token"
   });
   if (response.statusCode == 200) {
 

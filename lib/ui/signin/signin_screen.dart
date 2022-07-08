@@ -216,8 +216,8 @@ signin(String email, String password, BuildContext context) async {
   });
   if (response.statusCode == 200) {
     LoginResponseModel _model = loginResponseModelFromJson(response.body);
-    _model.data?.token;
-    save(_model.data?.token);
+    _model.data.token;
+    save(_model.data.token);
 
     Navigator.push(
       context,

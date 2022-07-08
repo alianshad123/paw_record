@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:paw_record/api/ApiConstants.dart';
-import 'package:paw_record/model/BannerDataModel.dart';
+import 'package:paw_record/generated/json/banner_data_model_entity.g.dart';
 import 'package:paw_record/model/DogsImageModel.dart';
 import 'package:paw_record/model/HomeSliderModel.dart';
 import 'package:paw_record/ui/addpet/addpet_screen.dart';
@@ -12,13 +12,15 @@ import 'package:http/http.dart' as http;
 import 'package:paw_record/api/ApiConstants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../model/banner_data_model_entity.dart';
+
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
 
   @override
   _DashboardScreenState createState() => _DashboardScreenState();
 }
-late List<Data> bannerDataList;
+//late List<Data> bannerDataList;
 class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
@@ -29,7 +31,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   int _currentIndex = 0;
 
-  List<HomeSliderModel> sliderDataList = [
+  List<HomeSliderModel> sliderData = [
     HomeSliderModel("images/slider_one.png", "Take me home",
         "Lorem ipsum dolor sit amet,\nlorem ipsum dolor sit amet"),
     HomeSliderModel(
@@ -100,7 +102,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: Column(
                 children: [
                   CarouselSlider.builder(
-                    itemCount: bannerDataList.length,
+                    itemCount: sliderData.length,
                     options: CarouselOptions(
                         autoPlay: true,
                         onPageChanged: (index, reason) {
@@ -109,13 +111,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           });
                         }),
                     itemBuilder: (context, index, realIndex) {
-                      return SliderImageView(bannerDataList[index]);
+                      return SliderImageView(sliderData[index]);
                     },
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: bannerDataList.map((url) {
-                      int index = bannerDataList.indexOf(url);
+                    children: sliderData.map((url) {
+                      int index = sliderData.indexOf(url);
                       return Container(
                         width: 8.0,
                         height: 8.0,
@@ -163,8 +165,6 @@ void getBanners(BuildContext context) async {
       "Authorization": "Bearer $token"
     });
     if (response.statusCode == 200) {
-      BannerDataModel _model = bannerModelFromJson(response.body);
-      bannerDataList = _model.data;
 
     } else {}
 
@@ -190,7 +190,7 @@ Widget _createSearchView() {
 }
 
 class SliderImageView extends StatelessWidget {
-  Data sliderData;
+  HomeSliderModel sliderData;
 
   SliderImageView(this.sliderData);
 
@@ -202,7 +202,7 @@ class SliderImageView extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8.0),
         image: DecorationImage(
-          image: NetworkImage(sliderData.imgPath.imageUrl),
+          image: NetworkImage(sliderData.imageUrl),
           fit: BoxFit.cover,
         ),
       ),
@@ -216,7 +216,7 @@ class SliderImageView extends StatelessWidget {
                   alignment: Alignment.topLeft,
                   child: Text(
                     sliderData.title,
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.black),
@@ -225,8 +225,8 @@ class SliderImageView extends StatelessWidget {
                 Align(
                   alignment: Alignment.topLeft,
                   child: Text(
-                    sliderData.image,
-                    style: TextStyle(
+                    sliderData.details,
+                    style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.normal,
                         color: Colors.black),
@@ -279,7 +279,7 @@ class DogsImageView extends StatelessWidget {
           child: Stack(
             children: [
               Padding(
-                padding: EdgeInsets.only(left: 15, top: 10),
+                padding: const EdgeInsets.only(left: 15, top: 10),
                 child: Column(
                   children: [
                     Expanded(
@@ -287,7 +287,7 @@ class DogsImageView extends StatelessWidget {
                             alignment: Alignment.bottomLeft,
                             child: Text(
                               dogsData.name,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white),
@@ -296,30 +296,30 @@ class DogsImageView extends StatelessWidget {
                       alignment: Alignment.bottomLeft,
                       child: Text(
                         dogsData.time,
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.normal,
                             color: Colors.white),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     Align(
                       alignment: Alignment.bottomLeft,
                       child: Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.pets,
                             color: Color(0xFFFFFFFF),
                             size: 10,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 5,
                           ),
                           Text(
                             dogsData.actvty,
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.normal,
                                 color: Colors.white),
@@ -327,7 +327,7 @@ class DogsImageView extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     )
                   ],

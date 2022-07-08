@@ -14,20 +14,10 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
-  void initState() {
+  initState()  {
     super.initState();
 
-    if (false) {
-      Timer(
-          Duration(seconds: 5),
-          () => Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => DashboardScreen())));
-    } else {
-      Timer(
-          Duration(seconds: 5),
-          () => Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => LoginScreen())));
-    }
+    retriveToken(context);
 
     //8017DA
   }
@@ -44,8 +34,20 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 }
 
-retriveToken() async {
+retriveToken(BuildContext context) async {
   var prefs = await SharedPreferences.getInstance();
   var token = prefs.getString("token");
-  return token;
+  
+
+  if (token==null) {
+    Timer(
+        Duration(seconds: 5),
+            () => Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => LoginScreen())));
+  } else {
+    Timer(
+        Duration(seconds: 5),
+            () => Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => DashboardScreen())));
+  }
 }
