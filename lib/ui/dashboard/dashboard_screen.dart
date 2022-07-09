@@ -1,18 +1,18 @@
-import 'package:flutter/cupertino.dart';
 import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:paw_record/api/ApiConstants.dart';
-import 'package:paw_record/generated/json/banner_data_model_entity.g.dart';
+import 'package:paw_record/model/DogsActivityDataModel.dart';
+import 'package:paw_record/model/DogsDataResponseModel.dart';
 import 'package:paw_record/model/DogsImageModel.dart';
 import 'package:paw_record/model/HomeSliderModel.dart';
 import 'package:paw_record/ui/addpet/addpet_screen.dart';
 import 'package:paw_record/ui/petdetail/petdetail_screen.dart';
 import 'package:http/http.dart' as http;
-import 'package:paw_record/api/ApiConstants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../model/banner_data_model_entity.dart';
+import '../../model/BannerDataModel.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -20,29 +20,34 @@ class DashboardScreen extends StatefulWidget {
   @override
   _DashboardScreenState createState() => _DashboardScreenState();
 }
-//late List<Data> bannerDataList;
+
 class _DashboardScreenState extends State<DashboardScreen> {
+  late final List<Data> sliderDataList;
+  //late List<DogsData> dogsList;
+  late Future<List<Data>?> bannerList;
+  late Future<List<DogsData>?> dogsList;
 
   @override
   void initState() {
     super.initState();
-      getBanners(context);
+    dogsList= getDogsList(context);
+    bannerList = getBanners(context);
   }
 
   int _currentIndex = 0;
 
-  List<HomeSliderModel> sliderData = [
-    HomeSliderModel("images/slider_one.png", "Take me home",
-        "Lorem ipsum dolor sit amet,\nlorem ipsum dolor sit amet"),
+ /* List<HomeSliderModel> sliderData = [
     HomeSliderModel(
-        "images/slider_one.png", "Take me home", "Lorem ipsum dolor sit amet"),
-    HomeSliderModel("images/slider_one.png", "Take me home",
-        "Lorem ipsum dolor sit amet"),
-  ];
+        "https://images8.alphacoders.com/407/407173.jpg",
+        "Take me home",
+        "Lorem ipsum dolor sit amet,\nlorem ipsum dolor sit amet"),
+    HomeSliderModel("https://images8.alphacoders.com/407/407173.jpg",
+        "Take me home", "Lorem ipsum dolor sit amet"),
+    HomeSliderModel("https://images8.alphacoders.com/407/407173.jpg",
+        "Take me home", "Lorem ipsum dolor sit amet"),
+  ];*/
 
-
-
-  List<DogsImageModel> dogsDataList = [
+ /* List<DogsImageModel> dogsDataList = [
     DogsImageModel(
         "images/slider_two.png", "Troy", "Weekdays | 7:00", "Dog Walking"),
     DogsImageModel(
@@ -50,7 +55,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     DogsImageModel(
         "images/slider_two.png", "Troy", "Weekdays | 7:00", "Dog Walking"),
   ];
-
+*/
   final _searchview = TextEditingController();
 
   @override
@@ -101,23 +106,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
               child: Column(
                 children: [
-                  CarouselSlider.builder(
-                    itemCount: sliderData.length,
-                    options: CarouselOptions(
-                        autoPlay: true,
-                        onPageChanged: (index, reason) {
-                          setState(() {
-                            _currentIndex = index;
-                          });
-                        }),
-                    itemBuilder: (context, index, realIndex) {
-                      return SliderImageView(sliderData[index]);
+
+                  FutureBuilder<List<Data>?>(
+                    future: bannerList,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+
+                        return  createBanners(snapshot.data,_currentIndex);
+
+
+                      } else if (snapshot.hasError) {
+                        return Text('${snapshot.error}');
+                      }
+
+                      // By default, show a loading spinner.
+                      return const CircularProgressIndicator();
                     },
                   ),
-                  Row(
+
+                 /* Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: sliderData.map((url) {
-                      int index = sliderData.indexOf(url);
+                    children: bannerList.map((url) {
+                      int index = bannerList.indexOf(url);
                       return Container(
                         width: 8.0,
                         height: 8.0,
@@ -131,14 +141,53 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                       );
                     }).toList(),
-                  )
+                  )*/
                 ],
               ),
             ),
             SizedBox(height: 10),
             Column(
               children: [
-                ListView.builder(
+               /* FutureBuilder(
+                  future: getDogsList(context),
+                    builder: (
+                    BuildContext context,
+                        AsyncSnapshot<List<DogsData>> snapshot,
+
+                    ){
+                    if(snapshot.hasData){
+
+                    }else{
+
+                }
+
+                )*/
+
+                FutureBuilder<List<DogsData>?>(
+                  future: dogsList,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+
+                      return  createDogListView(snapshot.data);
+
+
+                    } else if (snapshot.hasError) {
+                      return Text('${snapshot.error}');
+                    }
+
+                    // By default, show a loading spinner.
+                    return const CircularProgressIndicator();
+                  },
+                )
+
+
+
+
+
+                
+
+
+                /*ListView.builder(
                   shrinkWrap: true,
                   physics: ScrollPhysics(),
                   scrollDirection: Axis.vertical,
@@ -146,7 +195,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   itemBuilder: (context, index) {
                     return DogsImageView(dogsDataList[index]);
                   },
-                )
+                )*/
               ],
             )
           ],
@@ -154,20 +203,68 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 }
 
-void getBanners(BuildContext context) async {
+Widget createBanners(List<Data>? bannerData, int currentIndex) =>CarouselSlider.builder(
+  itemCount: bannerData?.length,
+  options: CarouselOptions(
+      autoPlay: true,
+      onPageChanged: (index, reason) {
+        currentIndex = index;
+      }),
+  itemBuilder: (context, index, realIndex) {
+    return SliderImageView(bannerData![index]);
+  }
+  ); /*{
+
+  CarouselSlider.builder(
+    itemCount: sliderData.length,
+    options: CarouselOptions(
+        autoPlay: true,
+        onPageChanged: (index, reason) {
+          setState(() {
+            _currentIndex = index;
+          });
+        }),
+    itemBuilder: (context, index, realIndex) {
+      return SliderImageView(sliderData[index]);
+    },
+  ),
+
+}*/
+
+Widget createDogListView(List<DogsData>? dogList)=>ListView.builder(
+    shrinkWrap: true,
+    physics: ScrollPhysics(),
+    scrollDirection: Axis.vertical,
+    itemCount: dogList?.length,
+    itemBuilder: (context, index) {
+      return DogsImageView(dogList![index]);
+    }
+);
+
+/*Widget createDogListView(List<DogsData>? dogList)=>ListView.builder(
+    shrinkWrap: true,
+    physics: ScrollPhysics(),
+    scrollDirection: Axis.vertical,
+    itemCount: dogList?.length,
+    itemBuilder: (context, index) {
+      return DogsImageView(dogList![index]);
+    }
+);*/
+
+Future<List<Data>?> getBanners(BuildContext context) async {
   var prefs = await SharedPreferences.getInstance();
-  var token =prefs.getString("token");
+  var token = prefs.getString("token");
 
-    var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.listBanner);
-    var response = await http.get(url,  headers: {
-      "Accept": "application/json",
-      "content-type": "application/json",
-      "Authorization": "Bearer $token"
-    });
-    if (response.statusCode == 200) {
-
-    } else {}
-
+  var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.listBanner);
+  var response = await http.get(url, headers: {
+    "Accept": "application/json",
+    "content-type": "application/json",
+    "Authorization": "Bearer $token"
+  });
+  if (response.statusCode == 200) {
+    BannerDataModel _model = bannerDataModelFromJson(response.body);
+    return _model.data;
+  } else {}
 }
 
 Widget _createSearchView() {
@@ -190,7 +287,7 @@ Widget _createSearchView() {
 }
 
 class SliderImageView extends StatelessWidget {
-  HomeSliderModel sliderData;
+  Data? sliderData;
 
   SliderImageView(this.sliderData);
 
@@ -202,7 +299,7 @@ class SliderImageView extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8.0),
         image: DecorationImage(
-          image: NetworkImage(sliderData.imageUrl),
+          image: NetworkImage('${sliderData?.imgPath?.imageUrl}${"/"}${sliderData?.image}'),
           fit: BoxFit.cover,
         ),
       ),
@@ -215,31 +312,31 @@ class SliderImageView extends StatelessWidget {
                 Align(
                   alignment: Alignment.topLeft,
                   child: Text(
-                    sliderData.title,
+                    sliderData?.title?? "",
                     style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.black),
                   ),
                 ),
-                Align(
+                /*Align(
                   alignment: Alignment.topLeft,
                   child: Text(
-                    sliderData.details,
+                    sliderData?.status?? "",
                     style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.normal,
                         color: Colors.black),
                   ),
-                ),
-                Align(
+                ),*/
+                /*Align(
                   alignment: Alignment.topLeft,
                   child: ElevatedButton(
                     onPressed: () {},
                     child: const Text('Let me'),
                     style: ElevatedButton.styleFrom(primary: Colors.black),
                   ),
-                ),
+                ),*/
               ],
             ),
           )
@@ -250,7 +347,7 @@ class SliderImageView extends StatelessWidget {
 }
 
 class DogsImageView extends StatelessWidget {
-  DogsImageModel dogsData;
+  DogsData dogsData;
 
   DogsImageView(this.dogsData);
 
@@ -272,7 +369,7 @@ class DogsImageView extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8.0),
             image: DecorationImage(
-              image: AssetImage(dogsData.imageUrl),
+              image: NetworkImage(dogsData.imageurl.toString()),
               fit: BoxFit.cover,
             ),
           ),
@@ -286,7 +383,7 @@ class DogsImageView extends StatelessWidget {
                         child: Align(
                             alignment: Alignment.bottomLeft,
                             child: Text(
-                              dogsData.name,
+                              dogsData.name.toString(),
                               style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -295,7 +392,7 @@ class DogsImageView extends StatelessWidget {
                     Align(
                       alignment: Alignment.bottomLeft,
                       child: Text(
-                        dogsData.time,
+                        dogsData.time.toString(),
                         style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.normal,
@@ -318,7 +415,7 @@ class DogsImageView extends StatelessWidget {
                             width: 5,
                           ),
                           Text(
-                            dogsData.actvty,
+                            dogsData.actvty.toString(),
                             style: const TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.normal,
@@ -337,4 +434,20 @@ class DogsImageView extends StatelessWidget {
           ),
         ));
   }
+}
+
+Future<List<DogsData>?> getDogsList(BuildContext context) async {
+
+
+  var url = Uri.parse(ApiConstants.basedummyUrl + ApiConstants.listDogs);
+  var response = await http.get(url, headers: {
+    "Accept": "application/json",
+    "content-type": "application/json",
+
+  });
+  if (response.statusCode == 200) {
+    final body=json.decode(response.body);
+    List<DogsData> dogsData=List<DogsData>.from(body.map((model)=> DogsData.fromJson(model)));
+    return dogsData;
+  } else {}
 }

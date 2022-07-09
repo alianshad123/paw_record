@@ -209,7 +209,7 @@ class _SignInScreenState extends State<SignInScreen> {
 signin(String email, String password, BuildContext context) async {
   var data = jsonEncode({'email': email, 'password': password});
 
-  var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.usersEndpoint);
+  var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.login);
   var response = await http.post(url, body: data, headers: {
     "Accept": "application/json",
     "content-type": "application/json"
@@ -219,12 +219,23 @@ signin(String email, String password, BuildContext context) async {
     _model.data.token;
     save(_model.data.token);
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const HomeScreen()),
-    );
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) => HomeScreen()));
+
   } else {
-    throw Exception('Unexpected error occured!');
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Alert'),
+        content: const Text('Something went wrong,Please try again'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'OK'),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 }
 

@@ -2,15 +2,19 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:paw_record/api/ApiConstants.dart';
 import 'package:paw_record/ui/home/home_screen.dart';
 import 'package:paw_record/ui/signin/signin_screen.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:paw_record/ui/utils/ImageFromGalleryEx.dart';
 import 'package:http/http.dart' as http;
+import 'package:paw_record/ui/utils/ImageFromGalleryEx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 
 enum ImageSourceType { gallery, camera }
+
 class AddPetScreen extends StatefulWidget {
   const AddPetScreen({Key? key}) : super(key: key);
 
@@ -32,6 +36,36 @@ class _AddPetScreenState extends State<AddPetScreen> {
   final address_controller = TextEditingController();
   final dob_controller = TextEditingController();
 
+  bool isSwitched1 = false;
+  bool isSwitched2 = false;
+
+  void toggleSwitch1(bool value) {
+    if (isSwitched1 == false) {
+      setState(() {
+        isSwitched1 = true;
+      });
+    } else {
+      setState(() {
+        isSwitched1 = false;
+      });
+    }
+  }
+
+  void toggleSwitch2(bool value) {
+    if (isSwitched2 == false) {
+      setState(() {
+        isSwitched2 = true;
+      });
+    } else {
+      setState(() {
+        isSwitched2 = false;
+      });
+    }
+  }
+
+  bool _hasMalePressed = false;
+  bool _hasFemalePressed = false;
+
   @override
   void initState() {
     super.initState();
@@ -39,9 +73,8 @@ class _AddPetScreenState extends State<AddPetScreen> {
   }
 
   void _handleURLButtonPress(BuildContext context, var type) {
-   // Navigator.push(context,
-       // MaterialPageRoute(builder: (context) => ImageFromGalleryEx(type)));
-
+     Navigator.push(context,
+    MaterialPageRoute(builder: (context) => ImageFromGalleryEx(type)));
   }
 
   @override
@@ -67,48 +100,46 @@ class _AddPetScreenState extends State<AddPetScreen> {
             child: SingleChildScrollView(
           child: Column(
             children: [
+              SizedBox(height: 10,),
               GestureDetector(
                 onTap: () async {
                   var source = type == ImageSourceType.camera
                       ? ImageSource.camera
                       : ImageSource.gallery;
                   XFile image = await imagePicker.pickImage(
-                      source: source, imageQuality: 50, preferredCameraDevice: CameraDevice.front);
+                      source: source,
+                      imageQuality: 50,
+                      preferredCameraDevice: CameraDevice.front);
                   setState(() {
                     _image = File(image.path);
                   });
                 },
-                  child: Container(
-                    width: 150,
-                    height: 150,
-                    decoration: const BoxDecoration(
-                        color: Colors.lightGreen,
-                        borderRadius: BorderRadius.all(
-                            Radius.circular(60.0)
+                child: Container(
+                  width: 150,
+                  height: 150,
+                  decoration: const BoxDecoration(
+                      color: Color(0xFF9A9898),
+                      borderRadius: BorderRadius.all(Radius.circular(100.0))),
+                  child: _image != null
+                      ? Image.file(
+                          _image,
+                          width: 150.0,
+                          height: 150.0,
+                          fit: BoxFit.fill,
                         )
-                    ),
-                    child: _image != null
-                        ? Image.file(
-                      _image,
-                      width: 150.0,
-                      height: 150.0,
-                      fit: BoxFit.fitHeight,
-                    )
-                        : Container(
-                      decoration: const BoxDecoration(
-                          color: Colors.lightGreen,
-                          borderRadius: BorderRadius.all(
-                          Radius.circular(60.0)
-                          )
-                      ),
-                      width: 150,
-                      height: 150,
-                      child: Icon(
-                        Icons.camera_alt,
-                        color: Colors.grey[800],
-                      ),
-                    ),
-                  ),
+                      : Container(
+                          decoration: const BoxDecoration(
+                              color: Color(0xFF9A9898),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(100.0))),
+                          width: 150,
+                          height: 150,
+                          child: Icon(
+                            Icons.camera_alt,
+                            color: Colors.grey[800],
+                          ),
+                        ),
+                ),
               ),
               SizedBox(height: 25),
               Container(
@@ -151,12 +182,11 @@ class _AddPetScreenState extends State<AddPetScreen> {
                         ),
                       ),
                     ),
-
                     TextFormField(
                       keyboardType: TextInputType.name,
                       controller: species_controller,
                       decoration: InputDecoration(
-                        labelText:  "Species of your pet",
+                        labelText: "Species of your pet",
                         labelStyle: TextStyle(
                           color: Color(0xFF999696),
                         ),
@@ -169,7 +199,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
                       keyboardType: TextInputType.name,
                       controller: breed_controller,
                       decoration: InputDecoration(
-                        labelText:  "Breed",
+                        labelText: "Breed",
                         labelStyle: TextStyle(
                           color: Color(0xFF999696),
                         ),
@@ -182,7 +212,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
                       keyboardType: TextInputType.name,
                       controller: size_controller,
                       decoration: InputDecoration(
-                        labelText:  "Size (Optional)",
+                        labelText: "Size (Optional)",
                         labelStyle: TextStyle(
                           color: Color(0xFF999696),
                         ),
@@ -195,7 +225,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
                       keyboardType: TextInputType.name,
                       controller: address_controller,
                       decoration: InputDecoration(
-                        labelText:  "Address",
+                        labelText: "Address",
                         labelStyle: TextStyle(
                           color: Color(0xFF999696),
                         ),
@@ -204,8 +234,6 @@ class _AddPetScreenState extends State<AddPetScreen> {
                         ),
                       ),
                     ),
-
-
                     SizedBox(
                       height: 10,
                     ),
@@ -225,60 +253,82 @@ class _AddPetScreenState extends State<AddPetScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         RaisedButton(
-                            elevation: 0.0,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30.0)),
-                            padding: EdgeInsets.only(
-                                top: 7.0, bottom: 7.0, right: 40.0, left: 7.0),
-                            onPressed: () {
-                              //Navigator.of(context).pushReplacementNamed();
-                            },
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Icon(Icons.male, color: Colors.white, size: 15),
-                                Padding(
-                                    padding: EdgeInsets.only(left: 10.0),
-                                    child: Text(
-                                      "Male",
-                                      style: TextStyle(
-                                          fontSize: 15.0,
-                                          fontWeight: FontWeight.bold),
-                                    ))
-                              ],
-                            ),
-                            textColor: Colors.white,
-                            color: Color(0xFF8017DA)),
+                          elevation: 0.0,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30.0)),
+                          padding: EdgeInsets.only(
+                              top: 7.0, bottom: 7.0, right: 40.0, left: 7.0),
+                          onPressed: () {
+                            setState(() {
+                              _hasMalePressed = !_hasMalePressed;
+
+                              if (_hasMalePressed == true) {
+                                _hasFemalePressed = false;
+                              } else {
+                                _hasFemalePressed = true;
+                              }
+                            });
+                          },
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Icon(Icons.male, color: Colors.white, size: 15),
+                              Padding(
+                                  padding: EdgeInsets.only(left: 10.0),
+                                  child: Text(
+                                    "Male",
+                                    style: TextStyle(
+                                        fontSize: 15.0,
+                                        fontWeight: FontWeight.bold),
+                                  ))
+                            ],
+                          ),
+                          textColor:
+                              _hasMalePressed ? Colors.white : Colors.black,
+                          color: _hasMalePressed
+                              ? Color(0xFF8017DA)
+                              : Colors.white,
+                        ),
                         const SizedBox(width: 20),
                         RaisedButton(
-                            elevation: 0.0,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30.0)),
-                            padding: EdgeInsets.only(
-                                top: 7.0, bottom: 7.0, right: 40.0, left: 7.0),
-                            onPressed: () {
-                              //Navigator.of(context).pushReplacementNamed();
-                            },
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Icon(Icons.female,
-                                    color: Color(0xFF8017DA), size: 15),
-                                Padding(
-                                    padding: EdgeInsets.only(left: 10.0),
-                                    child: Text(
-                                      "Female",
-                                      style: TextStyle(
-                                          fontSize: 15.0,
-                                          fontWeight: FontWeight.bold),
-                                    ))
-                              ],
-                            ),
-                            textColor: Colors.black,
-                            color: Colors.white),
+                          elevation: 0.0,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30.0)),
+                          padding: EdgeInsets.only(
+                              top: 7.0, bottom: 7.0, right: 40.0, left: 7.0),
+                          onPressed: () {
+                            setState(() {
+                              _hasFemalePressed = !_hasFemalePressed;
+                              if (_hasFemalePressed == true) {
+                                _hasMalePressed = false;
+                              } else {
+                                _hasMalePressed = true;
+                              }
+                            });
+                          },
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Icon(Icons.female, color: Colors.white, size: 15),
+                              Padding(
+                                  padding: EdgeInsets.only(left: 10.0),
+                                  child: Text(
+                                    "Female",
+                                    style: TextStyle(
+                                        fontSize: 15.0,
+                                        fontWeight: FontWeight.bold),
+                                  ))
+                            ],
+                          ),
+                          textColor:
+                              _hasFemalePressed ? Colors.white : Colors.black,
+                          color: _hasFemalePressed
+                              ? Color(0xFF8017DA)
+                              : Colors.white,
+                        ),
                       ],
                     ),
-                    TextFormField(
+                    /*TextFormField(
                       keyboardType: TextInputType.name,
                       controller: dob_controller,
                       decoration: InputDecoration(
@@ -290,7 +340,8 @@ class _AddPetScreenState extends State<AddPetScreen> {
                           borderSide: BorderSide(color: Color(0xCEE8E8E8)),
                         ),
                       ),
-                    ),
+                    ),*/
+                    BasicDateField(),
                     SizedBox(height: 25),
                     Container(
                       padding: EdgeInsets.fromLTRB(0, 10, 40, 0),
@@ -304,10 +355,67 @@ class _AddPetScreenState extends State<AddPetScreen> {
                             fontSize: 15),
                       ),
                     ),
-                    makeAdditionalOptions(
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.fromLTRB(0, 20, 10, 10),
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "Neutred",
+                            style: TextStyle(
+                              decoration: TextDecoration.none,
+                              color: Color(0xFF070707),
+                            ),
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: Switch(
+                            onChanged: toggleSwitch1,
+                            value: isSwitched1,
+                            activeColor: Colors.white,
+                            activeTrackColor: Color(0xFF8017DA),
+                            inactiveThumbColor: Colors.white,
+                            inactiveTrackColor: Color(0xFF8017DA),
+                          ),
+                        )
+                      ],
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.fromLTRB(0, 20, 10, 10),
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "vaccinated",
+                            style: TextStyle(
+                              decoration: TextDecoration.none,
+                              color: Color(0xFF070707),
+                            ),
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: Switch(
+                            onChanged: toggleSwitch2,
+                            value: isSwitched2,
+                            activeColor: Colors.white,
+                            activeTrackColor: Color(0xFF8017DA),
+                            inactiveThumbColor: Colors.white,
+                            inactiveTrackColor: Color(0xFF8017DA),
+                          ),
+                        )
+                      ],
+                    ),
+
+                    /* makeAdditionalOptions(
                         label: "Neutered", isSWitch: isSwitched),
                     makeAdditionalOptions(
-                        label: "Vaccinated", isSWitch: isSwitched),
+                        label: "Vaccinated", isSWitch: isSwitched),*/
                     /*makeAdditionalOptions(
                         label: "Friendly with dogs", isSWitch: isSwitched),
                     makeAdditionalOptions(
@@ -343,7 +451,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
                         ),
                       ),
                     ),
-                   /* Container(
+                    Container(
                       margin: const EdgeInsets.symmetric(vertical: 20.0),
                       height: 200.0,
                       child: ListView(
@@ -351,46 +459,52 @@ class _AddPetScreenState extends State<AddPetScreen> {
                         scrollDirection: Axis.horizontal,
                         shrinkWrap: true,
                         children: <Widget>[
-                          Container(
-                            child: Card(
-                                margin: const EdgeInsets.all(10.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                        child: Icon(
-                                      Icons.add_circle_rounded,
-                                      color: Color(0xFF8017DA),
-                                      size: 35,
-                                    )),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.fromLTRB(
-                                          5.0, 0.0, 5.0, 0.0),
-                                      child: Text(
-                                        'Measles Vaccine',
-                                        style: TextStyle(
-                                          decoration: TextDecoration.none,
-                                          color: Color(0xFF000000),
+                          GestureDetector(
+                            onTap: () {
+
+                            },
+                            child: Container(
+                              child: Card(
+                                  margin: const EdgeInsets.all(10.0),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                          child: Icon(
+                                        Icons.add_circle_rounded,
+                                        color: Color(0xFF8017DA),
+                                        size: 35,
+                                      )),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.fromLTRB(
+                                            5.0, 0.0, 5.0, 0.0),
+                                        child: Text(
+                                          'Add Remainder',
+                                          style: TextStyle(
+                                            decoration: TextDecoration.none,
+                                            color: Color(0xFF000000),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                  ],
-                                )),
-                          ),
-                          *//*makeReminderView(),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                    ],
+                                  )),
+                            ),
+                          )
+
+                          /*makeReminderView(),
                           makeReminderView(),
                           makeReminderView(),
                           makeReminderView(),
-                          makeReminderView()*//*
+                          makeReminderView()*/
                         ],
                       ),
-                    ),*/
+                    ),
                     SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
@@ -410,10 +524,19 @@ class _AddPetScreenState extends State<AddPetScreen> {
                                       side: BorderSide(
                                           color: const Color(0xFF8017DA))))),
                           onPressed: () {
-
-                            registerPet(petname_controller.text,species_controller.text,
-                                breed_controller.text, size_controller.text,address_controller.text,
-                                dob_controller.text,_image.toString(), context);
+                            registerPet(
+                                petname_controller.text,
+                                species_controller.text,
+                                breed_controller.text,
+                                size_controller.text,
+                                address_controller.text,
+                                "10-10-2000",
+                                "male",
+                                "Highly",
+                                "Yes",
+                                "Nothing",
+                                _image.toString(),
+                                context);
 
                             // Navigator.push(
                             //   context,
@@ -480,10 +603,23 @@ Widget makeAdditionalOptions({label, isSWitch}) {
   );
 }
 
-registerPet(String petname,String species, String breed,String size,String address,String dob,String image, BuildContext context) async {
+registerPet(String petname, String species, String breed, String size,
+    String address, String dob,String gender,String neautred,String vaccinated,String remainder, String image, BuildContext context) async {
   var prefs = await SharedPreferences.getInstance();
-  var token =prefs.getString("token");
-  var data = jsonEncode({'name': petname,'species': species, 'breed': breed,'size': size,'address': address, 'dob': dob,'img':image});
+  var token = prefs.getString("token");
+  var data = jsonEncode({
+    'name': petname,
+    'species': species,
+    'breed': breed,
+    'size': size,
+    'address': address,
+    'dob': dob,
+    'gender': gender,
+    'neutred': neautred,
+    'vaccinated': vaccinated,
+    'reminder': remainder,
+    'img': image
+  });
 
   var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.register_pet);
   var response = await http.post(url, body: data, headers: {
@@ -492,18 +628,57 @@ registerPet(String petname,String species, String breed,String size,String addre
     "Authorization": "Bearer $token"
   });
   if (response.statusCode == 200) {
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Info'),
+        content: const Text('Pet Details addedd Successfully'),
+        actions: <Widget>[
 
-    Navigator.push(
+          TextButton(
+            onPressed: () =>  Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const HomeScreen()),
+    ),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
     );
-  }else{
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const HomeScreen()),
+  } else {
+    /*showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Alert'),
+        content: const Text('Something went wrong,Please try again'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'OK'),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );*/
+
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Info'),
+        content: const Text('Pet Details addedd Successfully'),
+        actions: <Widget>[
+
+          TextButton(
+            onPressed: () =>  Navigator.pop(context, 'OK'),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
     );
+
   }
 }
+
+
 
 void toggleSwitch(bool value) {
   if (value == false) {
@@ -556,3 +731,38 @@ Widget makeReminderView() {
         )),
   );
 }
+
+class BasicDateField extends StatelessWidget {
+  final format = DateFormat("yyyy-MM-dd");
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: <Widget>[
+      Container(
+        padding: EdgeInsets.fromLTRB(0, 10, 40, 0),
+        alignment: Alignment.topLeft,
+        child: Text(
+          'DOB',
+
+          style: TextStyle(
+              decoration: TextDecoration.none,
+              color: Color(0xFF070707),
+              fontWeight: FontWeight.normal,
+              fontSize: 15),
+        ),
+      ),
+      DateTimeField(
+        format: format,
+        onShowPicker: (context, currentValue) {
+          return showDatePicker(
+              context: context,
+              firstDate: DateTime(1900),
+              initialDate: currentValue ?? DateTime.now(),
+              lastDate: DateTime(2100));
+        },
+      ),
+    ]);
+  }
+}
+
+

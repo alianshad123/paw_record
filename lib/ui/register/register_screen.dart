@@ -290,14 +290,22 @@ signUp(String fullname,String email, String password, BuildContext context) asyn
   if (response.statusCode == 200) {
     //LoginResponseModel _model = loginResponseModelFromJson(response.body);
     //log(response.toString());
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const SignInScreen()),
-    );
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) => SignInScreen()));
+
   }else{
-    /*Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const SignInScreen()),
-    );*/
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Alert'),
+        content: const Text('Something went wrong,Please try again'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'OK'),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 }
