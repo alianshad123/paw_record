@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:paw_record/api/ApiConstants.dart';
+import 'package:paw_record/model/ToggleListData.dart';
 import 'package:paw_record/ui/home/home_screen.dart';
 import 'package:paw_record/ui/signin/signin_screen.dart';
 import 'package:http/http.dart' as http;
@@ -51,7 +52,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
     }
   }
 
-  void toggleSwitch2(bool value) {
+/*  void toggleSwitch2(bool value) {
     if (isSwitched2 == false) {
       setState(() {
         isSwitched2 = true;
@@ -61,15 +62,17 @@ class _AddPetScreenState extends State<AddPetScreen> {
         isSwitched2 = false;
       });
     }
-  }
+  }*/
 
   bool _hasMalePressed = false;
   bool _hasFemalePressed = false;
+  late Future<List<Data>?> togglesList;
 
   @override
   void initState() {
     super.initState();
     imagePicker = ImagePicker();
+    togglesList= getToggels(context);
   }
 
   void _handleURLButtonPress(BuildContext context, var type) {
@@ -355,7 +358,23 @@ class _AddPetScreenState extends State<AddPetScreen> {
                             fontSize: 15),
                       ),
                     ),
-                    Row(
+                    FutureBuilder<List<Data>?>(
+                      future: togglesList,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+
+                          return  createToggleListView(snapshot.data,isSwitched1);
+
+
+                        } else if (snapshot.hasError) {
+                          return Text('${snapshot.error}');
+                        }
+
+                        // By default, show a loading spinner.
+                        return const CircularProgressIndicator();
+                      },
+                    ),
+                   /* Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -410,7 +429,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
                           ),
                         )
                       ],
-                    ),
+                    ),*/
 
                     /* makeAdditionalOptions(
                         label: "Neutered", isSWitch: isSwitched),
@@ -553,6 +572,39 @@ class _AddPetScreenState extends State<AddPetScreen> {
   }
 }
 
+Widget createToggleListView(List<Data>? toggleList) =>ListView.builder(
+    shrinkWrap: true,
+    physics: ScrollPhysics(),
+    scrollDirection: Axis.vertical,
+    itemCount: toggleList?.length,
+    itemBuilder: (context, index) {
+      return makeAdditionalOptions(context,toggleList![index].togName);
+    }
+);
+
+
+
+
+
+Future<List<Data>?> getToggels(BuildContext context) async {
+  var prefs = await SharedPreferences.getInstance();
+  var token = prefs.getString("token");
+
+  var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.listToggles);
+  var response = await http.get(url, headers: {
+    "Accept": "application/json",
+    "content-type": "application/json",
+    "Authorization": "Bearer $token"
+  });
+  if (response.statusCode == 200) {
+    ToggleListData _model = toggleListDataFromJson(response.body);
+    return _model.data;
+  } else {}
+}
+
+
+
+
 Widget makeInput({label, obsureText = false}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -572,7 +624,7 @@ Widget makeInput({label, obsureText = false}) {
   );
 }
 
-Widget makeAdditionalOptions({label, isSWitch}) {
+Widget makeAdditionalOptions(BuildContext context,String? label, {isSWitch}) {
   return Row(
     crossAxisAlignment: CrossAxisAlignment.start,
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -581,7 +633,7 @@ Widget makeAdditionalOptions({label, isSWitch}) {
         padding: EdgeInsets.fromLTRB(0, 20, 10, 10),
         alignment: Alignment.topLeft,
         child: Text(
-          label,
+          label!,
           style: TextStyle(
             decoration: TextDecoration.none,
             color: Color(0xFF070707),
@@ -591,7 +643,9 @@ Widget makeAdditionalOptions({label, isSWitch}) {
       Align(
         alignment: Alignment.topRight,
         child: Switch(
-          onChanged: toggleSwitch,
+          onChanged: (bool newValue) {
+
+          },
           value: isSWitch,
           activeColor: Colors.white,
           activeTrackColor: Color(0xFF8017DA),
@@ -678,15 +732,6 @@ registerPet(String petname, String species, String breed, String size,
   }
 }
 
-
-
-void toggleSwitch(bool value) {
-  if (value == false) {
-    value = true;
-  } else {
-    value = false;
-  }
-}
 
 Widget makeReminderView() {
   return Container(
