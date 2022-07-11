@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:paw_record/ui/dashboard/dashboard_screen.dart';
+import 'package:paw_record/ui/home/home_screen.dart';
 import 'package:paw_record/ui/login/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -48,6 +49,6 @@ retriveToken(BuildContext context) async {
     Timer(
         Duration(seconds: 5),
             () => Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => DashboardScreen())));
+            context, MaterialPageRoute(builder: (context) => HomeScreen())));
   }
 }

@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:carousel_slider/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:paw_record/api/ApiConstants.dart';
+import 'package:paw_record/model/RemainderDataModel.dart';
 import 'package:paw_record/model/ToggleListData.dart';
 import 'package:paw_record/ui/home/home_screen.dart';
 import 'package:paw_record/ui/signin/signin_screen.dart';
@@ -37,8 +39,12 @@ class _AddPetScreenState extends State<AddPetScreen> {
   final address_controller = TextEditingController();
   final dob_controller = TextEditingController();
 
+  final add = TextEditingController();
+
+
   bool isSwitched1 = false;
   bool isSwitched2 = false;
+
 
   void toggleSwitch1(bool value) {
     if (isSwitched1 == false) {
@@ -67,12 +73,15 @@ class _AddPetScreenState extends State<AddPetScreen> {
   bool _hasMalePressed = false;
   bool _hasFemalePressed = false;
   late Future<List<Data>?> togglesList;
+ // late Future<List<RemainderDataModel>?> remainderList;
+
 
   @override
   void initState() {
     super.initState();
     imagePicker = ImagePicker();
     togglesList= getToggels(context);
+
   }
 
   void _handleURLButtonPress(BuildContext context, var type) {
@@ -363,7 +372,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
 
-                          return  createToggleListView(snapshot.data,isSwitched1);
+                          return  createToggleListView(snapshot.data);
 
 
                         } else if (snapshot.hasError) {
@@ -480,7 +489,9 @@ class _AddPetScreenState extends State<AddPetScreen> {
                         children: <Widget>[
                           GestureDetector(
                             onTap: () {
+                              final format = DateFormat("yyyy-MM-dd");
 
+                              _displayTextInputDialog(context,format);
                             },
                             child: Container(
                               child: Card(
@@ -514,10 +525,29 @@ class _AddPetScreenState extends State<AddPetScreen> {
                                     ],
                                   )),
                             ),
-                          )
+                          ),
 
-                          /*makeReminderView(),
-                          makeReminderView(),
+                          /*FutureBuilder<List<RemainderDataModel>?>(
+                            future: remainderList,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+
+                                return  createRemainderList(snapshot.data); //(snapshot.data);
+
+
+                              } else if (snapshot.hasError) {
+                                return Text('${snapshot.error}');
+                              }
+
+                              // By default, show a loading spinner.
+                              return const CircularProgressIndicator();
+                            },
+                          )*/
+
+
+
+
+                         /* makeReminderView(),
                           makeReminderView(),
                           makeReminderView(),
                           makeReminderView()*/
@@ -570,7 +600,21 @@ class _AddPetScreenState extends State<AddPetScreen> {
           ),
         )));
   }
+
+
 }
+
+
+
+Widget createRemainderList(List<RemainderDataModel>? data) =>ListView.builder(
+    shrinkWrap: true,
+    physics: ScrollPhysics(),
+    scrollDirection: Axis.vertical,
+    itemCount: data?.length,
+    itemBuilder: (context, index) {
+      return makeReminderView(context,data![index]);
+    }
+);
 
 Widget createToggleListView(List<Data>? toggleList) =>ListView.builder(
     shrinkWrap: true,
@@ -578,9 +622,10 @@ Widget createToggleListView(List<Data>? toggleList) =>ListView.builder(
     scrollDirection: Axis.vertical,
     itemCount: toggleList?.length,
     itemBuilder: (context, index) {
-      return makeAdditionalOptions(context,toggleList![index].togName);
+      return makeAdditionalOptions(context,toggleList![index].togName,false);
     }
 );
+
 
 
 
@@ -605,6 +650,7 @@ Future<List<Data>?> getToggels(BuildContext context) async {
 
 
 
+
 Widget makeInput({label, obsureText = false}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -624,7 +670,7 @@ Widget makeInput({label, obsureText = false}) {
   );
 }
 
-Widget makeAdditionalOptions(BuildContext context,String? label, {isSWitch}) {
+Widget makeAdditionalOptions(BuildContext context,String? label, bool isSwitch) {
   return Row(
     crossAxisAlignment: CrossAxisAlignment.start,
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -643,14 +689,13 @@ Widget makeAdditionalOptions(BuildContext context,String? label, {isSWitch}) {
       Align(
         alignment: Alignment.topRight,
         child: Switch(
-          onChanged: (bool newValue) {
-
-          },
-          value: isSWitch,
+          value: isSwitch,
           activeColor: Colors.white,
           activeTrackColor: Color(0xFF8017DA),
           inactiveThumbColor: Colors.white,
-          inactiveTrackColor: Color(0xFF8017DA),
+          inactiveTrackColor: Color(0xFF8017DA), onChanged: (bool value) {
+
+        },
         ),
       )
     ],
@@ -733,7 +778,7 @@ registerPet(String petname, String species, String breed, String size,
 }
 
 
-Widget makeReminderView() {
+Widget makeReminderView(BuildContext context,RemainderDataModel? label) {
   return Container(
     child: Card(
         margin: const EdgeInsets.all(10.0),
@@ -753,7 +798,7 @@ Widget makeReminderView() {
             Container(
               margin: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
               child: Text(
-                'Measles Vaccine',
+                label?.message,
                 style: TextStyle(
                   decoration: TextDecoration.none,
                   color: Color(0xFF000000),
@@ -765,7 +810,7 @@ Widget makeReminderView() {
             ),
             Container(
               child: Text(
-                '30.08.2022',
+                label?.date_,
                 style: TextStyle(
                   decoration: TextDecoration.none,
                   color: Color(0xFF999696),
@@ -809,5 +854,69 @@ class BasicDateField extends StatelessWidget {
     ]);
   }
 }
+
+Future<void> _displayTextInputDialog(BuildContext context, DateFormat format) async {
+  final _textFieldController = TextEditingController();
+  final _dateFieldController = TextEditingController();
+  late Future<List<RemainderDataModel>?> remainderList;
+  return showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text('Add Remainder'),
+        content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+
+          TextField(
+            controller: _textFieldController,
+            decoration: InputDecoration(hintText: "Message"),
+          ),
+          Container(
+            padding: EdgeInsets.fromLTRB(0, 10, 40, 0),
+            alignment: Alignment.topLeft,
+            child: Text(
+              'Date',
+
+              style: TextStyle(
+                  decoration: TextDecoration.none,
+                  color: Color(0xFF070707),
+                  fontWeight: FontWeight.normal,
+                  fontSize: 15),
+            ),
+          ),
+          DateTimeField(
+            format: format,
+            controller: _dateFieldController,
+            onShowPicker: (context, currentValue) {
+              return showDatePicker(
+                  context: context,
+                  firstDate: DateTime(1900),
+                  initialDate: currentValue ?? DateTime.now(),
+                  lastDate: DateTime(2100));
+            },
+          ),
+        ]),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('CANCEL'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          FlatButton(
+            child: Text('OK'),
+            onPressed: () {
+
+
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+
 
 
