@@ -40,7 +40,7 @@ retriveToken(BuildContext context) async {
   var token = prefs.getString("token");
   
 
-  if (token==null) {
+  if (token==null || token=="") {
     Timer(
         Duration(seconds: 5),
             () => Navigator.pushReplacement(context,

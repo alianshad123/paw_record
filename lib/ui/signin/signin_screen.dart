@@ -138,6 +138,8 @@ class _SignInScreenState extends State<SignInScreen> {
                                               side: BorderSide(
                                                   color: const Color(0xFF8017DA))))),
                                   onPressed: () {
+
+                                    showLoaderDialog(context);
                                     signin(email_controller.text,
                                         password_controller.text, context);
 
@@ -204,6 +206,24 @@ class _SignInScreenState extends State<SignInScreen> {
 
 
   }*/
+
+}
+
+
+showLoaderDialog(BuildContext context){
+  AlertDialog alert=AlertDialog(
+    content: new Row(
+      children: [
+        CircularProgressIndicator(),
+        Container(margin: EdgeInsets.only(left: 7),child:Text("Loading..." )),
+      ],),
+  );
+  showDialog(barrierDismissible: false,
+    context:context,
+    builder:(BuildContext context){
+      return alert;
+    },
+  );
 }
 
 signin(String email, String password, BuildContext context) async {
@@ -215,6 +235,7 @@ signin(String email, String password, BuildContext context) async {
     "content-type": "application/json"
   });
   if (response.statusCode == 200) {
+    Navigator.pop(context);
     LoginResponseModel _model = loginResponseModelFromJson(response.body);
     _model.data.token;
     save(_model.data.token);
@@ -223,6 +244,7 @@ signin(String email, String password, BuildContext context) async {
         MaterialPageRoute(builder: (context) => HomeScreen()));
 
   } else {
+    Navigator.pop(context);
     showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(

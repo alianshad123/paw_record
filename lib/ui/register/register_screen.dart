@@ -201,6 +201,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                      )
                                  ),
                                  onPressed: () {
+                                   showLoaderDialog(context);
                                    signUp(fullname_controller.text,email_controller.text,
                                        password_controller.text, context);
                                  },
@@ -250,6 +251,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 }
 
+showLoaderDialog(BuildContext context){
+  AlertDialog alert=AlertDialog(
+    content: new Row(
+      children: [
+        CircularProgressIndicator(),
+        Container(margin: EdgeInsets.only(left: 7),child:Text("Loading..." )),
+      ],),
+  );
+  showDialog(barrierDismissible: false,
+    context:context,
+    builder:(BuildContext context){
+      return alert;
+    },
+  );
+}
+
 Widget makeInput({label,obsureText = false}){
   return Column(
 
@@ -288,12 +305,14 @@ signUp(String fullname,String email, String password, BuildContext context) asyn
     "content-type": "application/json"
   });
   if (response.statusCode == 200) {
+    Navigator.pop(context);
     //LoginResponseModel _model = loginResponseModelFromJson(response.body);
     //log(response.toString());
     Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) => SignInScreen()));
 
   }else{
+    Navigator.pop(context);
     showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
