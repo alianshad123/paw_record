@@ -45,6 +45,68 @@ class _AddPetScreenState extends State<AddPetScreen> {
   bool isSwitched1 = false;
   bool isSwitched2 = false;
 
+  Future<void> _displayTextInputDialog(BuildContext context, DateFormat format) async {
+    final _textFieldController = TextEditingController();
+    final _dateFieldController = TextEditingController();
+
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Add Remainder'),
+          content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+
+                TextField(
+                  controller: _textFieldController,
+                  decoration: InputDecoration(hintText: "Message"),
+                ),
+                Container(
+                  padding: EdgeInsets.fromLTRB(0, 10, 40, 0),
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    'Date',
+
+                    style: TextStyle(
+                        decoration: TextDecoration.none,
+                        color: Color(0xFF070707),
+                        fontWeight: FontWeight.normal,
+                        fontSize: 15),
+                  ),
+                ),
+                DateTimeField(
+                  format: format,
+                  controller: _dateFieldController,
+                  onShowPicker: (context, currentValue) {
+                    return showDatePicker(
+                        context: context,
+                        firstDate: DateTime(1900),
+                        initialDate: currentValue ?? DateTime.now(),
+                        lastDate: DateTime(2100));
+                  },
+                ),
+              ]),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('CANCEL'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () {
+                remainderList= getRemainders(context,_textFieldController.text,_dateFieldController.text);
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 
   void toggleSwitch1(bool value) {
     if (isSwitched1 == false) {
@@ -73,7 +135,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
   bool _hasMalePressed = false;
   bool _hasFemalePressed = false;
   late Future<List<Data>?> togglesList;
- // late Future<List<RemainderDataModel>?> remainderList;
+  Future<List<RemainderDataModel>?>? remainderList;
 
 
   @override
@@ -81,6 +143,8 @@ class _AddPetScreenState extends State<AddPetScreen> {
     super.initState();
     imagePicker = ImagePicker();
     togglesList= getToggels(context);
+
+
 
   }
 
@@ -527,7 +591,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
                             ),
                           ),
 
-                          /*FutureBuilder<List<RemainderDataModel>?>(
+                          FutureBuilder<List<RemainderDataModel>?>(
                             future: remainderList,
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
@@ -542,7 +606,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
                               // By default, show a loading spinner.
                               return const CircularProgressIndicator();
                             },
-                          )*/
+                          )
 
 
 
@@ -606,6 +670,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
 
 
 
+
 Widget createRemainderList(List<RemainderDataModel>? data) =>ListView.builder(
     shrinkWrap: true,
     physics: ScrollPhysics(),
@@ -646,6 +711,21 @@ Future<List<Data>?> getToggels(BuildContext context) async {
     return _model.data;
   } else {}
 }
+
+Future<List<RemainderDataModel>?> getRemainders(BuildContext context, String message, String date) async {
+
+  List<RemainderDataModel> remainders = [];
+  remainders.add(
+    RemainderDataModel(
+      message =message,
+      date= date
+    ),
+  );
+
+  return remainders;
+
+}
+
 
 
 
@@ -855,67 +935,7 @@ class BasicDateField extends StatelessWidget {
   }
 }
 
-Future<void> _displayTextInputDialog(BuildContext context, DateFormat format) async {
-  final _textFieldController = TextEditingController();
-  final _dateFieldController = TextEditingController();
-  late Future<List<RemainderDataModel>?> remainderList;
-  return showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: Text('Add Remainder'),
-        content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
 
-          TextField(
-            controller: _textFieldController,
-            decoration: InputDecoration(hintText: "Message"),
-          ),
-          Container(
-            padding: EdgeInsets.fromLTRB(0, 10, 40, 0),
-            alignment: Alignment.topLeft,
-            child: Text(
-              'Date',
-
-              style: TextStyle(
-                  decoration: TextDecoration.none,
-                  color: Color(0xFF070707),
-                  fontWeight: FontWeight.normal,
-                  fontSize: 15),
-            ),
-          ),
-          DateTimeField(
-            format: format,
-            controller: _dateFieldController,
-            onShowPicker: (context, currentValue) {
-              return showDatePicker(
-                  context: context,
-                  firstDate: DateTime(1900),
-                  initialDate: currentValue ?? DateTime.now(),
-                  lastDate: DateTime(2100));
-            },
-          ),
-        ]),
-        actions: <Widget>[
-          FlatButton(
-            child: Text('CANCEL'),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          FlatButton(
-            child: Text('OK'),
-            onPressed: () {
-
-
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
 
 
 
