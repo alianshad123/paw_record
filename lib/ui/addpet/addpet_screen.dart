@@ -664,7 +664,7 @@ Widget createToggleListView(List<Data>? toggleList) =>ListView.builder(
     scrollDirection: Axis.vertical,
     itemCount: toggleList?.length,
     itemBuilder: (context, index) {
-      return makeAdditionalOptions(context,toggleList![index].togName,false);
+      return SwitchView(toggleList![index]);   //makeAdditionalOptions(context,toggleList![index].togName,false);
     }
 );
 
@@ -798,6 +798,46 @@ registerPet(String petname, String species, String breed, String size,
       ),
     );
 
+  }
+}
+
+class SwitchView extends StatelessWidget {
+  Data toggleData;
+
+  SwitchView(this.toggleData);
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(
+          padding: EdgeInsets.fromLTRB(0, 20, 10, 10),
+          alignment: Alignment.topLeft,
+          child: Text(
+            toggleData.togName.toString(),
+            style: TextStyle(
+              decoration: TextDecoration.none,
+              color: Color(0xFF070707),
+            ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.topRight,
+          child: Switch(
+            value: isSwitch,
+            activeColor: Colors.white,
+            activeTrackColor: Color(0xFF8017DA),
+            inactiveThumbColor: Colors.white,
+            inactiveTrackColor: Color(0xFF8017DA), onChanged: (bool value) {
+
+          },
+          ),
+        )
+      ],
+    );
   }
 }
 
