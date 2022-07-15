@@ -39,15 +39,26 @@ class _AddPetScreenState extends State<AddPetScreen> {
   final address_controller = TextEditingController();
   final dob_controller = TextEditingController();
 
+  final _textFieldController = TextEditingController();
+  final _dateFieldController = TextEditingController();
+
   final add = TextEditingController();
+  final List<RemainderDataModel> remainderData = <RemainderDataModel>[];
 
 
   bool isSwitched1 = false;
   bool isSwitched2 = false;
 
+
+  void addItemToList(){
+    setState(() {
+      remainderData.add(RemainderDataModel(_textFieldController.text, _dateFieldController.text));
+
+    });
+  }
+
   Future<void> _displayTextInputDialog(BuildContext context, DateFormat format) async {
-    final _textFieldController = TextEditingController();
-    final _dateFieldController = TextEditingController();
+
 
     return showDialog(
       context: context,
@@ -97,8 +108,11 @@ class _AddPetScreenState extends State<AddPetScreen> {
             FlatButton(
               child: Text('OK'),
               onPressed: () {
-                remainderList= getRemainders(context,_textFieldController.text,_dateFieldController.text);
                 Navigator.pop(context);
+
+                //remainderList= getRemainders(context);
+                addItemToList();
+
               },
             ),
           ],
@@ -107,6 +121,19 @@ class _AddPetScreenState extends State<AddPetScreen> {
     );
   }
 
+  Future<List<RemainderDataModel>?> getRemainders(BuildContext context) async {
+
+    List<RemainderDataModel> remainders = [];
+    remainders.add(
+      RemainderDataModel(
+      _textFieldController.text,
+      _dateFieldController.text
+      ),
+    );
+
+    return remainders;
+
+  }
 
   void toggleSwitch1(bool value) {
     if (isSwitched1 == false) {
@@ -120,22 +147,14 @@ class _AddPetScreenState extends State<AddPetScreen> {
     }
   }
 
-/*  void toggleSwitch2(bool value) {
-    if (isSwitched2 == false) {
-      setState(() {
-        isSwitched2 = true;
-      });
-    } else {
-      setState(() {
-        isSwitched2 = false;
-      });
-    }
-  }*/
+
 
   bool _hasMalePressed = false;
   bool _hasFemalePressed = false;
   late Future<List<Data>?> togglesList;
-  Future<List<RemainderDataModel>?>? remainderList;
+   Future<List<RemainderDataModel>?>? remainderList;
+
+
 
 
   @override
@@ -144,14 +163,8 @@ class _AddPetScreenState extends State<AddPetScreen> {
     imagePicker = ImagePicker();
     togglesList= getToggels(context);
 
-
-
   }
 
-  void _handleURLButtonPress(BuildContext context, var type) {
-     Navigator.push(context,
-    MaterialPageRoute(builder: (context) => ImageFromGalleryEx(type)));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -404,19 +417,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
                         ),
                       ],
                     ),
-                    /*TextFormField(
-                      keyboardType: TextInputType.name,
-                      controller: dob_controller,
-                      decoration: InputDecoration(
-                        labelText:  "Date of birth",
-                        labelStyle: TextStyle(
-                          color: Color(0xFF999696),
-                        ),
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xCEE8E8E8)),
-                        ),
-                      ),
-                    ),*/
+
                     BasicDateField(),
                     SizedBox(height: 25),
                     Container(
@@ -546,10 +547,9 @@ class _AddPetScreenState extends State<AddPetScreen> {
                     Container(
                       margin: const EdgeInsets.symmetric(vertical: 20.0),
                       height: 200.0,
-                      child: ListView(
+                      child: Row(
                         // This next line does the trick.
-                        scrollDirection: Axis.horizontal,
-                        shrinkWrap: true,
+
                         children: <Widget>[
                           GestureDetector(
                             onTap: () {
@@ -590,31 +590,18 @@ class _AddPetScreenState extends State<AddPetScreen> {
                                   )),
                             ),
                           ),
-
-                          FutureBuilder<List<RemainderDataModel>?>(
-                            future: remainderList,
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-
-                                return  createRemainderList(snapshot.data); //(snapshot.data);
-
-
-                              } else if (snapshot.hasError) {
-                                return Text('${snapshot.error}');
-                              }
-
-                              // By default, show a loading spinner.
-                              return const CircularProgressIndicator();
-                            },
-                          )
-
-
-
-
-                         /* makeReminderView(),
-                          makeReminderView(),
-                          makeReminderView(),
-                          makeReminderView()*/
+                Expanded(
+                child:ListView.builder(
+                    key: UniqueKey(),
+                    shrinkWrap: true,
+                    physics: ScrollPhysics(),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: remainderData?.length,
+                    itemBuilder: (context, index) {
+                      return RemainderView(remainderData![index]);
+                    }
+                ),
+                )
                         ],
                       ),
                     ),
@@ -671,16 +658,6 @@ class _AddPetScreenState extends State<AddPetScreen> {
 
 
 
-Widget createRemainderList(List<RemainderDataModel>? data) =>ListView.builder(
-    shrinkWrap: true,
-    physics: ScrollPhysics(),
-    scrollDirection: Axis.vertical,
-    itemCount: data?.length,
-    itemBuilder: (context, index) {
-      return makeReminderView(context,data![index]);
-    }
-);
-
 Widget createToggleListView(List<Data>? toggleList) =>ListView.builder(
     shrinkWrap: true,
     physics: ScrollPhysics(),
@@ -690,9 +667,6 @@ Widget createToggleListView(List<Data>? toggleList) =>ListView.builder(
       return makeAdditionalOptions(context,toggleList![index].togName,false);
     }
 );
-
-
-
 
 
 
@@ -711,24 +685,6 @@ Future<List<Data>?> getToggels(BuildContext context) async {
     return _model.data;
   } else {}
 }
-
-Future<List<RemainderDataModel>?> getRemainders(BuildContext context, String message, String date) async {
-
-  List<RemainderDataModel> remainders = [];
-  remainders.add(
-    RemainderDataModel(
-      message =message,
-      date= date
-    ),
-  );
-
-  return remainders;
-
-}
-
-
-
-
 
 
 Widget makeInput({label, obsureText = false}) {
@@ -825,19 +781,7 @@ registerPet(String petname, String species, String breed, String size,
       ),
     );
   } else {
-    /*showDialog<String>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: const Text('Alert'),
-        content: const Text('Something went wrong,Please try again'),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.pop(context, 'OK'),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );*/
+
 
     showDialog<String>(
       context: context,
@@ -857,49 +801,56 @@ registerPet(String petname, String species, String breed, String size,
   }
 }
 
+class RemainderView extends StatelessWidget {
+  RemainderDataModel remainder;
 
-Widget makeReminderView(BuildContext context,RemainderDataModel? label) {
-  return Container(
-    child: Card(
-        margin: const EdgeInsets.all(10.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-                child: Image.asset(
-              'images/ic_syringe.png',
-              width: 35,
-              height: 35,
-              color: Color(0xFF8017DA),
-            )),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              margin: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-              child: Text(
-                label?.message,
-                style: TextStyle(
-                  decoration: TextDecoration.none,
-                  color: Color(0xFF000000),
+  RemainderView(this.remainder);
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Container(
+      child: Card(
+          margin: const EdgeInsets.all(10.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                  child: Image.asset(
+                    'images/ic_syringe.png',
+                    width: 35,
+                    height: 35,
+                    color: Color(0xFF8017DA),
+                  )),
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                margin: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
+                child: Text(
+                  remainder.message,
+                  style: TextStyle(
+                    decoration: TextDecoration.none,
+                    color: Color(0xFF000000),
+                  ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            Container(
-              child: Text(
-                label?.date_,
-                style: TextStyle(
-                  decoration: TextDecoration.none,
-                  color: Color(0xFF999696),
-                ),
+              SizedBox(
+                height: 5,
               ),
-            )
-          ],
-        )),
-  );
+              Container(
+                child: Text(
+                  remainder.date_,
+                  style: TextStyle(
+                    decoration: TextDecoration.none,
+                    color: Color(0xFF999696),
+                  ),
+                ),
+              )
+            ],
+          )),
+    );
+  }
 }
 
 class BasicDateField extends StatelessWidget {
