@@ -1,3 +1,7 @@
+// To parse this JSON data, do
+//
+//     final dogsDataResponseModel = dogsDataResponseModelFromJson(jsonString);
+
 import 'dart:convert';
 
 DogsDataResponseModel dogsDataResponseModelFromJson(String str) => DogsDataResponseModel.fromJson(json.decode(str));
@@ -5,53 +9,101 @@ DogsDataResponseModel dogsDataResponseModelFromJson(String str) => DogsDataRespo
 String dogsDataResponseModelToJson(DogsDataResponseModel data) => json.encode(data.toJson());
 
 class DogsDataResponseModel {
-  List<DogsData>? dogsData;
+  DogsDataResponseModel({
+    required this.data,
+    required this.imgPath,
+    required this.success,
+    required this.message,
+  });
 
-  DogsDataResponseModel({this.dogsData});
+  List<DogsData> data;
+  String imgPath;
+  bool success;
+  String message;
 
-  DogsDataResponseModel.fromJson(Map<String, dynamic> json) {
-    if (json['dogsData'] != null) {
-      dogsData = <DogsData>[];
-      json['dogsData'].forEach((v) {
-        dogsData!.add(new DogsData.fromJson(v));
-      });
-    }
-  }
+  factory DogsDataResponseModel.fromJson(Map<String, dynamic> json) => DogsDataResponseModel(
+    data: List<DogsData>.from(json["data"].map((x) => DogsData.fromJson(x))),
+    imgPath: json["img_path"],
+    success: json["success"],
+    message: json["message"],
+  );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.dogsData != null) {
-      data['dogsData'] = this.dogsData!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+    "data": List<dynamic>.from(data.map((x) => x.toJson())),
+    "img_path": imgPath,
+    "success": success,
+    "message": message,
+  };
 }
 
-DogsData dogsDataFromJson(String str) => DogsData.fromJson(json.decode(str));
-
-String dogsDataToJson(DogsData data) => json.encode(data.toJson());
-
 class DogsData {
-  String? imageurl;
-  String? name;
-  String? time;
-  String? actvty;
+  DogsData({
+    required this.petId,
+    required this.petUsId,
+    required this.petName,
+    required this.petSpecies,
+    required this.petBreed,
+    required this.petSize,
+    required this.petGender,
+    required this.petDob,
+    required this.petAddress,
+    required this.petNeutred,
+    required this.petVaccinated,
+    required this.petReminder,
+    required this.petPic,
+    required this.createdAt,
+    required this.updatedAt,
+  });
 
-  DogsData({this.imageurl, this.name, this.time, this.actvty});
+  int petId;
+  int petUsId;
+  String petName;
+  String petSpecies;
+  String petBreed;
+  String petSize;
+  String petGender;
+  DateTime petDob;
+  String petAddress;
+  String petNeutred;
+  String petVaccinated;
+  String petReminder;
+  String petPic;
+  DateTime createdAt;
+  DateTime updatedAt;
 
-  DogsData.fromJson(Map<String, dynamic> json) {
-    imageurl = json['imageurl'];
-    name = json['name'];
-    time = json['time'];
-    actvty = json['actvty'];
-  }
+  factory DogsData.fromJson(Map<String, dynamic> json) => DogsData(
+    petId: json["pet_id"],
+    petUsId: json["pet_us_id"],
+    petName: json["pet_name"],
+    petSpecies: json["pet_species"],
+    petBreed: json["pet_breed"],
+    petSize: json["pet_size"],
+    petGender: json["pet_gender"],
+    petDob: DateTime.parse(json["pet_dob"]),
+    petAddress: json["pet_address"],
+    petNeutred: json["pet_neutred"],
+    petVaccinated: json["pet_vaccinated"],
+    petReminder: json["pet_reminder"],
+    petPic: json["pet_pic"],
+    createdAt: DateTime.parse(json["created_at"]),
+    updatedAt: DateTime.parse(json["updated_at"]),
+  );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['imageurl'] = this.imageurl;
-    data['name'] = this.name;
-    data['time'] = this.time;
-    data['actvty'] = this.actvty;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+    "pet_id": petId,
+    "pet_us_id": petUsId,
+    "pet_name": petName,
+    "pet_species": petSpecies,
+    "pet_breed": petBreed,
+    "pet_size": petSize,
+    "pet_gender": petGender,
+    "pet_dob": "${petDob.year.toString().padLeft(4, '0')}-${petDob.month.toString().padLeft(2, '0')}-${petDob.day.toString().padLeft(2, '0')}",
+    "pet_address": petAddress,
+    "pet_neutred": petNeutred,
+    "pet_vaccinated": petVaccinated,
+    "pet_reminder": petReminder,
+    "pet_pic": petPic,
+    "created_at": createdAt.toIso8601String(),
+    "updated_at": updatedAt.toIso8601String(),
+  };
 }

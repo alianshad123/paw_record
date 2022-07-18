@@ -8,5 +8,8 @@ class ApiConstants {
   static String basedummyUrl = 'https://mocki.io/v1';
   static String listDogs = '/a78d484d-621c-4250-a7fc-71466df8ebcc';
   static String listToggles ='/listToggles';
+  static String listpets ='/pets';
+
+  static String IMAGEURL="";
 
 }

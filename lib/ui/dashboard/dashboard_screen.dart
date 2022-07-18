@@ -22,9 +22,8 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  late final List<Data> sliderDataList;
-  //late List<DogsData> dogsList;
-  late Future<List<Data>?> bannerList;
+  late final List<Datum> sliderDataList;
+  late Future<List<Datum>?> bannerList;
   late Future<List<DogsData>?> dogsList;
 
   @override
@@ -36,26 +35,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   int _currentIndex = 0;
 
- /* List<HomeSliderModel> sliderData = [
-    HomeSliderModel(
-        "https://images8.alphacoders.com/407/407173.jpg",
-        "Take me home",
-        "Lorem ipsum dolor sit amet,\nlorem ipsum dolor sit amet"),
-    HomeSliderModel("https://images8.alphacoders.com/407/407173.jpg",
-        "Take me home", "Lorem ipsum dolor sit amet"),
-    HomeSliderModel("https://images8.alphacoders.com/407/407173.jpg",
-        "Take me home", "Lorem ipsum dolor sit amet"),
-  ];*/
 
- /* List<DogsImageModel> dogsDataList = [
-    DogsImageModel(
-        "images/slider_two.png", "Troy", "Weekdays | 7:00", "Dog Walking"),
-    DogsImageModel(
-        "images/slider_three.png", "Penne", "Mondays | 19:00", "Dog Care"),
-    DogsImageModel(
-        "images/slider_two.png", "Troy", "Weekdays | 7:00", "Dog Walking"),
-  ];
-*/
   final _searchview = TextEditingController();
 
   @override
@@ -107,7 +87,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: Column(
                 children: [
 
-                  FutureBuilder<List<Data>?>(
+                  FutureBuilder<List<Datum>?>(
                     future: bannerList,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
@@ -148,20 +128,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             SizedBox(height: 10),
             Column(
               children: [
-               /* FutureBuilder(
-                  future: getDogsList(context),
-                    builder: (
-                    BuildContext context,
-                        AsyncSnapshot<List<DogsData>> snapshot,
 
-                    ){
-                    if(snapshot.hasData){
-
-                    }else{
-
-                }
-
-                )*/
 
                 FutureBuilder<List<DogsData>?>(
                   future: dogsList,
@@ -179,23 +146,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     return const CircularProgressIndicator();
                   },
                 )
-
-
-
-
-
-                
-
-
-                /*ListView.builder(
-                  shrinkWrap: true,
-                  physics: ScrollPhysics(),
-                  scrollDirection: Axis.vertical,
-                  itemCount: dogsDataList.length,
-                  itemBuilder: (context, index) {
-                    return DogsImageView(dogsDataList[index]);
-                  },
-                )*/
               ],
             )
           ],
@@ -203,7 +153,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 }
 
-Widget createBanners(List<Data>? bannerData, int currentIndex) =>CarouselSlider.builder(
+Widget createBanners(List<Datum>? bannerData, int currentIndex) =>CarouselSlider.builder(
   itemCount: bannerData?.length,
   options: CarouselOptions(
       autoPlay: true,
@@ -241,17 +191,8 @@ Widget createDogListView(List<DogsData>? dogList)=>ListView.builder(
     }
 );
 
-/*Widget createDogListView(List<DogsData>? dogList)=>ListView.builder(
-    shrinkWrap: true,
-    physics: ScrollPhysics(),
-    scrollDirection: Axis.vertical,
-    itemCount: dogList?.length,
-    itemBuilder: (context, index) {
-      return DogsImageView(dogList![index]);
-    }
-);*/
 
-Future<List<Data>?> getBanners(BuildContext context) async {
+Future<List<Datum>?> getBanners(BuildContext context) async {
   var prefs = await SharedPreferences.getInstance();
   var token = prefs.getString("token");
 
@@ -263,6 +204,7 @@ Future<List<Data>?> getBanners(BuildContext context) async {
   });
   if (response.statusCode == 200) {
     BannerDataModel _model = bannerDataModelFromJson(response.body);
+    ApiConstants.IMAGEURL=_model.imgPath;
     return _model.data;
   } else {}
 }
@@ -287,7 +229,7 @@ Widget _createSearchView() {
 }
 
 class SliderImageView extends StatelessWidget {
-  Data? sliderData;
+  Datum? sliderData;
 
   SliderImageView(this.sliderData);
 
@@ -299,7 +241,7 @@ class SliderImageView extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8.0),
         image: DecorationImage(
-          image: NetworkImage('${sliderData?.imgPath?.imageUrl}${"/"}${sliderData?.image}'),
+          image: NetworkImage('${ApiConstants.IMAGEURL}${"/"}${sliderData?.image}'),
           fit: BoxFit.cover,
         ),
       ),
@@ -319,24 +261,6 @@ class SliderImageView extends StatelessWidget {
                         color: Colors.black),
                   ),
                 ),
-                /*Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    sliderData?.status?? "",
-                    style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.normal,
-                        color: Colors.black),
-                  ),
-                ),*/
-                /*Align(
-                  alignment: Alignment.topLeft,
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    child: const Text('Let me'),
-                    style: ElevatedButton.styleFrom(primary: Colors.black),
-                  ),
-                ),*/
               ],
             ),
           )
@@ -369,7 +293,7 @@ class DogsImageView extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8.0),
             image: DecorationImage(
-              image: NetworkImage(dogsData.imageurl.toString()),
+              image:  NetworkImage('${ApiConstants.IMAGEURL}${"/"}${dogsData?.petPic}'),
               fit: BoxFit.cover,
             ),
           ),
@@ -383,7 +307,7 @@ class DogsImageView extends StatelessWidget {
                         child: Align(
                             alignment: Alignment.bottomLeft,
                             child: Text(
-                              dogsData.name.toString(),
+                              dogsData.petName,
                               style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -392,7 +316,7 @@ class DogsImageView extends StatelessWidget {
                     Align(
                       alignment: Alignment.bottomLeft,
                       child: Text(
-                        dogsData.time.toString(),
+                        dogsData.petNeutred,
                         style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.normal,
@@ -415,7 +339,7 @@ class DogsImageView extends StatelessWidget {
                             width: 5,
                           ),
                           Text(
-                            dogsData.actvty.toString(),
+                            dogsData.petBreed,
                             style: const TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.normal,
@@ -437,17 +361,19 @@ class DogsImageView extends StatelessWidget {
 }
 
 Future<List<DogsData>?> getDogsList(BuildContext context) async {
+  var prefs = await SharedPreferences.getInstance();
+  var token = prefs.getString("token");
 
-
-  var url = Uri.parse(ApiConstants.basedummyUrl + ApiConstants.listDogs);
+  var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.listpets);
   var response = await http.get(url, headers: {
     "Accept": "application/json",
     "content-type": "application/json",
+    "Authorization": "Bearer $token"
 
   });
   if (response.statusCode == 200) {
-    final body=json.decode(response.body);
-    List<DogsData> dogsData=List<DogsData>.from(body.map((model)=> DogsData.fromJson(model)));
-    return dogsData;
+    DogsDataResponseModel _model = dogsDataResponseModelFromJson(response.body);
+    ApiConstants.IMAGEURL=_model.imgPath;
+    return _model.data;
   } else {}
 }

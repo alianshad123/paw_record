@@ -827,7 +827,7 @@ class SwitchView extends StatelessWidget {
         Align(
           alignment: Alignment.topRight,
           child: Switch(
-            value: isSwitch,
+            value: toggleData.isSwitched?? false,
             activeColor: Colors.white,
             activeTrackColor: Color(0xFF8017DA),
             inactiveThumbColor: Colors.white,
