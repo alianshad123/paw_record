@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:paw_record/ui/dashboard/dashboard_screen.dart';
 import 'package:paw_record/ui/petdetail/petdetail_screen.dart';
 import 'package:paw_record/ui/register/register_screen.dart';
@@ -119,7 +120,7 @@ class _DetailViewScreenState extends State<DetailViewScreen> {
           brightness: Brightness.light,
           leading: IconButton(
               onPressed: () {
-                Navigator.pop(context);
+                SystemNavigator. pop();
               },
               icon: Icon(
                 Icons.arrow_back_ios,

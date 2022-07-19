@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:paw_record/ui/splash/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -24,7 +25,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           backgroundColor: const Color(0xFFFAFAFA),
           leading: IconButton(
               onPressed: () {
-                Navigator.pop(context);
+                SystemNavigator. pop();
               },
               icon: Icon(
                 Icons.arrow_back_ios,

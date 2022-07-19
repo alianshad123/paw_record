@@ -44,6 +44,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
 
   final add = TextEditingController();
   final List<RemainderDataModel> remainderData = <RemainderDataModel>[];
+  final format = DateFormat("yyyy-MM-dd");
 
 
   bool isSwitched1 = false;
@@ -147,9 +148,21 @@ class _AddPetScreenState extends State<AddPetScreen> {
     }
   }
 
+  void toggleSwitch2(bool value) {
+    if (isSwitched2 == false) {
+      setState(() {
+        isSwitched2 = true;
+      });
+    } else {
+      setState(() {
+        isSwitched2 = false;
+      });
+    }
+  }
 
 
-  bool _hasMalePressed = false;
+
+  bool _hasMalePressed = true;
   bool _hasFemalePressed = false;
   late Future<List<Data>?> togglesList;
    Future<List<RemainderDataModel>?>? remainderList;
@@ -418,7 +431,32 @@ class _AddPetScreenState extends State<AddPetScreen> {
                       ],
                     ),
 
-                    BasicDateField(),
+                  Column(children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.fromLTRB(0, 10, 40, 0),
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        'DOB',
+
+                        style: TextStyle(
+                            decoration: TextDecoration.none,
+                            color: Color(0xFF070707),
+                            fontWeight: FontWeight.normal,
+                            fontSize: 15),
+                      ),
+                    ),
+                    DateTimeField(
+                      format: format,
+                      controller:dob_controller,
+                      onShowPicker: (context, currentValue) {
+                        return showDatePicker(
+                            context: context,
+                            firstDate: DateTime(1900),
+                            initialDate: currentValue ?? DateTime.now(),
+                            lastDate: DateTime(2100));
+                      },
+                    ),
+                  ]),
                     SizedBox(height: 25),
                     Container(
                       padding: EdgeInsets.fromLTRB(0, 10, 40, 0),
@@ -432,7 +470,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
                             fontSize: 15),
                       ),
                     ),
-                    FutureBuilder<List<Data>?>(
+                   /* FutureBuilder<List<Data>?>(
                       future: togglesList,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
@@ -447,8 +485,8 @@ class _AddPetScreenState extends State<AddPetScreen> {
                         // By default, show a loading spinner.
                         return const CircularProgressIndicator();
                       },
-                    ),
-                   /* Row(
+                    ),*/
+                    Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -503,7 +541,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
                           ),
                         )
                       ],
-                    ),*/
+                    ),
 
                     /* makeAdditionalOptions(
                         label: "Neutered", isSWitch: isSwitched),
@@ -624,18 +662,26 @@ class _AddPetScreenState extends State<AddPetScreen> {
                                       side: BorderSide(
                                           color: const Color(0xFF8017DA))))),
                           onPressed: () {
+                            var gender;
+                            if(_hasMalePressed){
+                              gender="male";
+                            }else if(_hasFemalePressed){
+                              gender="female";
+                            }
+
+
                             registerPet(
                                 petname_controller.text,
                                 species_controller.text,
                                 breed_controller.text,
                                 size_controller.text,
                                 address_controller.text,
-                                "10-10-2000",
-                                "male",
+                                dob_controller.text,
+                                gender,
                                 "Highly",
                                 "Yes",
-                                "Nothing",
-                                _image.toString(),
+                                remainderData,
+                                _image,
                                 context);
 
                             // Navigator.push(
@@ -653,7 +699,43 @@ class _AddPetScreenState extends State<AddPetScreen> {
   }
 
 
+
+
 }
+
+/*class BasicDateField extends StatelessWidget {
+  final format = DateFormat("yyyy-MM-dd");
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: <Widget>[
+      Container(
+        padding: EdgeInsets.fromLTRB(0, 10, 40, 0),
+        alignment: Alignment.topLeft,
+        child: Text(
+          'DOB',
+
+          style: TextStyle(
+              decoration: TextDecoration.none,
+              color: Color(0xFF070707),
+              fontWeight: FontWeight.normal,
+              fontSize: 15),
+        ),
+      ),
+      DateTimeField(
+        format: format,
+        controller: ,
+        onShowPicker: (context, currentValue) {
+          return showDatePicker(
+              context: context,
+              firstDate: DateTime(1900),
+              initialDate: currentValue ?? DateTime.now(),
+              lastDate: DateTime(2100));
+        },
+      ),
+    ]);
+  }
+}*/
 
 
 
@@ -739,29 +821,39 @@ Widget makeAdditionalOptions(BuildContext context,String? label, bool isSwitch) 
 }
 
 registerPet(String petname, String species, String breed, String size,
-    String address, String dob,String gender,String neautred,String vaccinated,String remainder, String image, BuildContext context) async {
+    String address, String dob,String gender,String neautred,String vaccinated,List<RemainderDataModel> remainder, File image, BuildContext context) async {
   var prefs = await SharedPreferences.getInstance();
   var token = prefs.getString("token");
-  var data = jsonEncode({
-    'name': petname,
-    'species': species,
-    'breed': breed,
-    'size': size,
-    'address': address,
-    'dob': dob,
-    'gender': gender,
-    'neutred': neautred,
-    'vaccinated': vaccinated,
-    'reminder': remainder,
-    'img': image
-  });
+  var remainder_ ="";
 
+  for (var element in remainder) {
+    remainder_=remainder_+","+element.message;
+  }
   var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.register_pet);
-  var response = await http.post(url, body: data, headers: {
+  var request= http.MultipartRequest("POST",url);
+  request.headers['Accept']="application/json";
+  request.headers['content-type']="application/json";
+  request.headers['Authorization']="Bearer $token";
+  request.fields['name']=petname;
+  request.fields['species']=species;
+  request.fields['breed']=breed;
+  request.fields['size']=size;
+  request.fields['address']=address;
+  request.fields['dob']=dob;
+  request.fields['gender']=gender;
+  request.fields['neutred']=neautred;
+  request.fields['vaccinated']=vaccinated;
+  request.fields['reminder']=remainder_;
+  request.files.add(http.MultipartFile('img',File(image.path).readAsBytes().asStream(), File(image.path).lengthSync(),filename: image.path.split("/").last));
+
+  var response= await request.send();
+  //var responseData= await response.stream.toBytes();
+
+ /* var response = await http.post(url, body: request, headers: {
     "Accept": "application/json",
     "content-type": "application/json",
     "Authorization": "Bearer $token"
-  });
+  });*/
   if (response.statusCode == 200) {
     showDialog<String>(
       context: context,
@@ -790,10 +882,11 @@ registerPet(String petname, String species, String breed, String size,
         content: const Text('Pet Details addedd Successfully'),
         actions: <Widget>[
 
-          TextButton(
-            onPressed: () =>  Navigator.pop(context, 'OK'),
+         /* TextButton(
+            onPressed: () =>
+                Navigator.pop(context, 'OK'),
             child: const Text('OK'),
-          ),
+          )*/
         ],
       ),
     );
@@ -858,15 +951,15 @@ class RemainderView extends StatelessWidget {
               Container(
                   child: Image.asset(
                     'images/ic_syringe.png',
-                    width: 35,
-                    height: 35,
+                    width: 30,
+                    height: 30,
                     color: Color(0xFF8017DA),
                   )),
               SizedBox(
                 height: 10,
               ),
               Container(
-                margin: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
+                margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
                 child: Text(
                   remainder.message,
                   style: TextStyle(
@@ -879,6 +972,7 @@ class RemainderView extends StatelessWidget {
                 height: 5,
               ),
               Container(
+                margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
                 child: Text(
                   remainder.date_,
                   style: TextStyle(
@@ -893,38 +987,6 @@ class RemainderView extends StatelessWidget {
   }
 }
 
-class BasicDateField extends StatelessWidget {
-  final format = DateFormat("yyyy-MM-dd");
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(children: <Widget>[
-      Container(
-        padding: EdgeInsets.fromLTRB(0, 10, 40, 0),
-        alignment: Alignment.topLeft,
-        child: Text(
-          'DOB',
-
-          style: TextStyle(
-              decoration: TextDecoration.none,
-              color: Color(0xFF070707),
-              fontWeight: FontWeight.normal,
-              fontSize: 15),
-        ),
-      ),
-      DateTimeField(
-        format: format,
-        onShowPicker: (context, currentValue) {
-          return showDatePicker(
-              context: context,
-              firstDate: DateTime(1900),
-              initialDate: currentValue ?? DateTime.now(),
-              lastDate: DateTime(2100));
-        },
-      ),
-    ]);
-  }
-}
 
 
 

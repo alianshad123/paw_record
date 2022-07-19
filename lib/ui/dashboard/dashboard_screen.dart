@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/services.dart';
 import 'package:paw_record/api/ApiConstants.dart';
 import 'package:paw_record/model/DogsActivityDataModel.dart';
 import 'package:paw_record/model/DogsDataResponseModel.dart';
@@ -51,7 +52,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           backgroundColor: const Color(0xFFF9F8FA),
           leading: IconButton(
               onPressed: () {
-                Navigator.pop(context);
+                SystemNavigator. pop();
               },
               icon: Icon(
                 Icons.arrow_back_ios,
