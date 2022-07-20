@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:paw_record/model/LoginResponseModel.dart';
 import 'package:paw_record/ui/home/home_screen.dart';
+import 'package:paw_record/ui/petsitter/petsitterhome/petsitter_home.dart';
 import 'package:paw_record/ui/register/register_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:paw_record/api/ApiConstants.dart';
@@ -238,10 +239,15 @@ signin(String email, String password, BuildContext context) async {
     Navigator.pop(context);
     LoginResponseModel _model = loginResponseModelFromJson(response.body);
     _model.data.token;
-    save(_model.data.token);
+    save(_model.data.token,_model.type);
 
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => HomeScreen()));
+    if(_model.type=="CUSTOMER") {
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => const PetSitterHomeScreen()));
+    }else{
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()));
+    }
 
   } else {
     Navigator.pop(context);
@@ -261,9 +267,10 @@ signin(String email, String password, BuildContext context) async {
   }
 }
 
-save(String? token) async {
+save(String? token, String? type) async {
   var prefs = await SharedPreferences.getInstance();
   prefs.setString("token", token!);
+  prefs.setString("type", type!);
 }
 
 Widget makeInput({label, obsureText = false}) {

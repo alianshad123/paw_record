@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:paw_record/ui/dashboard/dashboard_screen.dart';
 import 'package:paw_record/ui/home/home_screen.dart';
 import 'package:paw_record/ui/login/login_screen.dart';
+import 'package:paw_record/ui/petsitter/petsitterhome/petsitter_home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -38,17 +39,30 @@ class _SplashScreenState extends State<SplashScreen> {
 retriveToken(BuildContext context) async {
   var prefs = await SharedPreferences.getInstance();
   var token = prefs.getString("token");
+  var type = prefs.getString("type");
   
 
   if (token==null || token=="") {
     Timer(
-        Duration(seconds: 5),
+        const Duration(seconds: 5),
             () => Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => LoginScreen())));
+            MaterialPageRoute(builder: (context) => const LoginScreen())));
   } else {
-    Timer(
-        Duration(seconds: 5),
-            () => Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => HomeScreen())));
+    if(type=="CUSTOMER") {
+      Timer(
+          const Duration(seconds: 5),
+              () =>
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const PetSitterHomeScreen())));
+    }else{
+      Timer(
+          const Duration(seconds: 5),
+              () =>
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen())));
+
+    }
   }
 }
