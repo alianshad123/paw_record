@@ -8,6 +8,7 @@ import 'package:paw_record/model/DogsDataResponseModel.dart';
 import 'package:paw_record/ui/addpet/addpet_screen.dart';
 import 'package:paw_record/ui/petdetail/petdetail_screen.dart';
 import 'package:http/http.dart' as http;
+import 'package:paw_record/ui/petsitter/petdetails/petsitterdetails_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -266,7 +267,7 @@ class DogsImageView extends StatelessWidget {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const PetDetailScreen()),
+            MaterialPageRoute(builder: (context) =>  PetSitterDetailScreen(dogsData)),
           );
         },
         child: Container(

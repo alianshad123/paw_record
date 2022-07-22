@@ -9,6 +9,8 @@ class ApiConstants {
   static String listDogs = '/a78d484d-621c-4250-a7fc-71466df8ebcc';
   static String listToggles ='/listToggles';
   static String listpets ='/pets';
+  static String listtask ='/pettask';
+  static String update_pet_task ='/update-pet-task';
 
   static String IMAGEURL="";
 

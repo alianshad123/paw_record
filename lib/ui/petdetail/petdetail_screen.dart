@@ -427,22 +427,7 @@ class _PetDetailScreenState extends State<PetDetailScreen> {
                                         fontSize: 10),
                                   ),
                                 ),
-                               /* Container(
-                                  child: Column(
-                                    children: [
-                                      ListView.builder(
-                                        shrinkWrap: true,
-                                        physics: ScrollPhysics(),
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount: assignedUsers.length,
-                                        itemBuilder: (context, index) {
-                                          return AssignedUserView(
-                                              assignedUsers[index]);
-                                        },
-                                      )
-                                    ],
-                                  ) ,
-                                ),*/
+
                                 Column(
                                   children: [
                                     Row(
