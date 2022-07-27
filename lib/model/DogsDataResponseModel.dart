@@ -61,8 +61,8 @@ class DogsData {
   String petSpecies;
   String petBreed;
   String petSize;
-  String petGender;
-  DateTime petDob;
+  String? petGender;
+  String petDob;
   String petAddress;
   String petNeutred;
   String petVaccinated;
@@ -79,7 +79,7 @@ class DogsData {
     petBreed: json["pet_breed"],
     petSize: json["pet_size"],
     petGender: json["pet_gender"],
-    petDob: DateTime.parse(json["pet_dob"]),
+    petDob: json["pet_dob"],
     petAddress: json["pet_address"],
     petNeutred: json["pet_neutred"],
     petVaccinated: json["pet_vaccinated"],
@@ -97,7 +97,7 @@ class DogsData {
     "pet_breed": petBreed,
     "pet_size": petSize,
     "pet_gender": petGender,
-    "pet_dob": "${petDob.year.toString().padLeft(4, '0')}-${petDob.month.toString().padLeft(2, '0')}-${petDob.day.toString().padLeft(2, '0')}",
+    "pet_dob": petDob,
     "pet_address": petAddress,
     "pet_neutred": petNeutred,
     "pet_vaccinated": petVaccinated,

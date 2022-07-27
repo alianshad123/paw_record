@@ -49,19 +49,22 @@ retriveToken(BuildContext context) async {
             MaterialPageRoute(builder: (context) => const LoginScreen())));
   } else {
     if(type=="CUSTOMER") {
-      Timer(
-          const Duration(seconds: 5),
-              () =>
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const PetSitterHomeScreen())));
-    }else{
+
       Timer(
           const Duration(seconds: 5),
               () =>
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => const HomeScreen())));
+
+    }else{
+
+      Timer(
+          const Duration(seconds: 5),
+              () =>
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const PetSitterHomeScreen())));
 
     }
   }

@@ -12,6 +12,7 @@ import 'package:paw_record/model/HomeSliderModel.dart';
 import 'package:paw_record/ui/addpet/addpet_screen.dart';
 import 'package:paw_record/ui/petdetail/petdetail_screen.dart';
 import 'package:http/http.dart' as http;
+import 'package:paw_record/ui/petdetail/petdetails_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../model/BannerDataModel.dart';
 
@@ -35,6 +36,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   int _currentIndex = 0;
+
 
 
   final _searchview = TextEditingController();
@@ -150,7 +152,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ],
             )
           ],
-        ))));
+        ))
+        ));
   }
 }
 
@@ -283,7 +286,7 @@ class DogsImageView extends StatelessWidget {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const PetDetailScreen()),
+            MaterialPageRoute(builder: (context) =>  PetDetailsScreen(dogsData)),
           );
         },
         child: Container(

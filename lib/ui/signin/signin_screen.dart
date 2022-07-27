@@ -242,11 +242,13 @@ signin(String email, String password, BuildContext context) async {
     save(_model.data.token,_model.type);
 
     if(_model.type=="CUSTOMER") {
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => const PetSitterHomeScreen()));
-    }else{
+
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) => const HomeScreen()));
+
+    }else{
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => const PetSitterHomeScreen()));
     }
 
   } else {
