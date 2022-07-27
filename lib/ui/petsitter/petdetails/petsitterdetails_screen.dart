@@ -42,7 +42,7 @@ class _PetSitterDetailScreenState extends State<PetSitterDetailScreen> {
         ),
         extendBodyBehindAppBar: true,
         body: Container(child: SingleChildScrollView(child: Column(
-          
+
         ))));
   }
 }
