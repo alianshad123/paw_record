@@ -4,7 +4,9 @@ import 'package:paw_record/api/ApiConstants.dart';
 import 'package:paw_record/model/DogsDataResponseModel.dart';
 import 'package:paw_record/model/TaskDataModel.dart';
 import 'package:paw_record/model/TaskDataModel.dart';
+import 'package:paw_record/ui/chat/chat_screen.dart';
 import 'package:paw_record/ui/petsitter/petsittertask/tasklist_screen.dart';
+import 'package:paw_record/ui/signin/signin_screen.dart';
 
 class PetDetailsScreen extends StatefulWidget {
   final DogsData dogsData;
@@ -22,7 +24,7 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
 
   void addItemToList() {
     setState(() {
-      taskData.add(Datum(null, _textFieldController.text, null, null, false));
+      taskData.add(Datum(id:0,petTaskName: _textFieldController.text,createdAt:DateTime.now(),updatedAt: DateTime.now(),isCheked:false));
     });
   }
 
@@ -79,63 +81,72 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
                     top: 370,
                     right: 10,
                     child: Container(
-                      child: Card(
-                          elevation: 10,
-                          child: Container(
-                              height: 40,
-                              width: 150,
-                              padding: EdgeInsets.all(5),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 30,
-                                    height: 30,
-                                    child: Container(
-                                      alignment: Alignment.centerLeft,
-                                      child: CircleAvatar(
-                                        backgroundImage: NetworkImage(
-                                            "https://picsum.photos/200/300?random=1"),
-                                        radius: 10.0,
-                                      ),
-                                    ),
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+
+                       child: GestureDetector(
+                          onTap: () => Navigator.pushReplacement(context,
+                              MaterialPageRoute(builder: (context) => const ChatScreen())),
+                          child: Card(
+                              elevation: 10,
+                              child: Container(
+                                  height: 40,
+                                  width: 150,
+                                  padding: EdgeInsets.all(5),
+                                  child: Row(
                                     children: [
-                                      Text(
-                                        'Ali Anshad',
-                                        style: TextStyle(
-                                            decoration: TextDecoration.none,
-                                            color: Color(0xFF8017DA),
-                                            fontWeight: FontWeight.normal,
-                                            fontSize: 12),
+                                      Container(
+                                        width: 30,
+                                        height: 30,
+                                        child: Container(
+                                          alignment: Alignment.centerLeft,
+                                          child: CircleAvatar(
+                                            backgroundImage: NetworkImage(
+                                                "https://picsum.photos/200/300?random=1"),
+                                            radius: 10.0,
+                                          ),
+                                        ),
                                       ),
-                                      Text(
-                                        'Pet owner',
-                                        style: TextStyle(
-                                            decoration: TextDecoration.none,
-                                            fontWeight: FontWeight.normal,
-                                            fontSize: 8),
+                                      Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Ali Anshad',
+                                            style: TextStyle(
+                                                decoration: TextDecoration.none,
+                                                color: Color(0xFF8017DA),
+                                                fontWeight: FontWeight.normal,
+                                                fontSize: 12),
+                                          ),
+                                          Text(
+                                            'Pet owner',
+                                            style: TextStyle(
+                                                decoration: TextDecoration.none,
+                                                fontWeight: FontWeight.normal,
+                                                fontSize: 8),
+                                          )
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        width: 20,
+                                      ),
+                                      Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Container(
+                                          alignment: Alignment.centerRight,
+                                          child: Icon(
+                                            Icons.message,
+                                            size: 20,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
                                       )
                                     ],
-                                  ),
-                                  SizedBox(
-                                    width: 20,
-                                  ),
-                                  Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Container(
-                                      alignment: Alignment.centerRight,
-                                      child: Icon(
-                                        Icons.message,
-                                        size: 20,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ))),
+                                  ))),
+                        ),
+
+
+
+
                     ))
               ],
             ),
