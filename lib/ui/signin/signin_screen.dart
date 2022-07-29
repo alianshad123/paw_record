@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:paw_record/model/LoginResponseModel.dart';
 import 'package:paw_record/ui/home/home_screen.dart';
@@ -6,6 +7,7 @@ import 'package:paw_record/ui/petsitter/petsitterhome/petsitter_home.dart';
 import 'package:paw_record/ui/register/register_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:paw_record/api/ApiConstants.dart';
+import 'package:paw_record/ui/utils/Authmethods.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -18,6 +20,7 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   final email_controller = TextEditingController();
   final password_controller = TextEditingController();
+  AuthMethods authMethods=AuthMethods();
 
   @override
   Widget build(BuildContext context) {
@@ -144,6 +147,13 @@ class _SignInScreenState extends State<SignInScreen> {
                                     signin(email_controller.text,
                                         password_controller.text, context);
 
+
+
+                                    authMethods.signInWithEmailAndPassword(email_controller.text,  password_controller.text).then((value) {
+
+
+                                    });
+
                                     /* String email = email_controller.text;
                                     String password = password_controller.text;
 
@@ -241,7 +251,7 @@ signin(String email, String password, BuildContext context) async {
     _model.data.token;
     save(_model.data.token,_model.type);
 
-    if(_model.type=="CUSTOMER") {
+    if(_model.type=="OWNER") {
 
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) => const HomeScreen()));
