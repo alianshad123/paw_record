@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "505646654755",
+    "firebase_url": "https://paw-rec-default-rtdb.firebaseio.com",
+    "project_id": "paw-rec",
+    "storage_bucket": "paw-rec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:505646654755:android:f43c7ff732ea9945739896",
+        "android_client_info": {
+          "package_name": "com.paw.paw_record"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "505646654755-egcr73f078q42d58vhhh00ng9c5be9hq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.paw.paw_record",
+            "certificate_hash": "a4841cc52905217112d7d0d7f58066bdc407672e"
+          }
+        },
+        {
+          "client_id": "505646654755-v3qqk4dnha5jjl9kmms4sjq91drh8qf8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMSOvv2pRMFIRItTOtJLB_jJIrUNawAVQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "505646654755-v3qqk4dnha5jjl9kmms4sjq91drh8qf8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

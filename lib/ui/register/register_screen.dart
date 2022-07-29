@@ -7,6 +7,8 @@ import 'dart:developer';
 
 import 'package:paw_record/ui/login/login_screen.dart';
 import 'package:paw_record/ui/signin/signin_screen.dart';
+import 'package:paw_record/ui/utils/Authmethods.dart';
+import 'package:paw_record/ui/utils/DatabaseMethods.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -22,7 +24,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final email_controller = TextEditingController();
   final password_controller = TextEditingController();
 
-
+  AuthMethods authMethods=AuthMethods();
+  DatabaseMethods databaseMethods=DatabaseMethods();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -202,8 +205,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                  ),
                                  onPressed: () {
                                    showLoaderDialog(context);
+
+                                   Map<String,String> userInfoMap ={
+                                     "name":fullname_controller.text,
+                                     "email": email_controller.text
+                                   };
+
+                                   authMethods.signUpWithEmailAndPassword(email_controller.text,  password_controller.text).then((value) {
+
+                                     databaseMethods.uploadUserInfo(userInfoMap);
+
+                                   });
                                    signUp(fullname_controller.text,email_controller.text,
                                        password_controller.text, context);
+
                                  },
                                )
 
@@ -297,7 +312,7 @@ Widget makeInput({label,obsureText = false}){
 
 signUp(String fullname,String email, String password, BuildContext context) async {
 
-  var data = jsonEncode({'full_name': fullname,'email': email, 'password': password});
+  var data = jsonEncode({'full_name': fullname,'email': email, 'password': password, 'type': "OWNER"});
 
   var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.registration);
   var response = await http.post(url, body: data, headers: {
@@ -305,9 +320,10 @@ signUp(String fullname,String email, String password, BuildContext context) asyn
     "content-type": "application/json"
   });
   if (response.statusCode == 200) {
-    Navigator.pop(context);
+    //Navigator.pop(context);
     //LoginResponseModel _model = loginResponseModelFromJson(response.body);
     //log(response.toString());
+
     Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) => SignInScreen()));
 
