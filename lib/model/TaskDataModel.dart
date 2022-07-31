@@ -38,21 +38,21 @@ class Datum {
     required this.petTaskName,
     required this.createdAt,
     required this.updatedAt,
-    required this.isCheked,
+    required this.status,
   });
 
   int id;
   String petTaskName;
   DateTime createdAt;
   DateTime updatedAt;
-  bool isCheked;
+  int status;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
     id: json["id"],
     petTaskName: json["pet_task_name"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
-    isCheked: json["isCheked"]
+      status: json["status"]
   );
 
   Map<String, dynamic> toJson() => {
@@ -60,7 +60,7 @@ class Datum {
     "pet_task_name": petTaskName,
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
-    "isCheked":false
+    "status":0
   };
 }
 

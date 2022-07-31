@@ -22,11 +22,11 @@ class AuthMethods {
 
   Future signUpWithEmailAndPassword(String  email,String password) async {
 
-    //try{
+    try{
 
-      /*UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       User? firebaseUser = result.user;
-      return _userFromFirebaseUser(firebaseUser);*/
+      return _userFromFirebaseUser(firebaseUser);
 
 
       try {
@@ -47,9 +47,9 @@ class AuthMethods {
 
 
 
-    /*}catch(e){
+    }catch(e){
       print(e);
-    }*/
+    }
   }
   Future signOut() async{
     try{

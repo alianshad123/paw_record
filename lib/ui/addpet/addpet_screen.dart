@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:carousel_slider/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_logs/flutter_logs.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:paw_record/api/ApiConstants.dart';
 import 'package:paw_record/model/RemainderDataModel.dart';
@@ -763,6 +764,7 @@ Future<List<Data>?> getToggels(BuildContext context) async {
     "Authorization": "Bearer $token"
   });
   if (response.statusCode == 200) {
+    FlutterLogs.logInfo("JsonDataResponse","PawJson", response.body);
     ToggleListData _model = toggleListDataFromJson(response.body);
     return _model.data;
   } else {}

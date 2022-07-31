@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_logs/flutter_logs.dart';
 import 'package:paw_record/api/ApiConstants.dart';
 import 'package:paw_record/model/DogsDataResponseModel.dart';
 import 'package:paw_record/model/TaskDataModel.dart';
@@ -7,6 +10,8 @@ import 'package:paw_record/model/TaskDataModel.dart';
 import 'package:paw_record/ui/chat/chat_screen.dart';
 import 'package:paw_record/ui/petsitter/petsittertask/tasklist_screen.dart';
 import 'package:paw_record/ui/signin/signin_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class PetDetailsScreen extends StatefulWidget {
   final DogsData dogsData;
@@ -22,9 +27,17 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
   final List<Datum> taskData = <Datum>[];
   final _textFieldController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+
+  }
+
   void addItemToList() {
     setState(() {
-      taskData.add(Datum(id:0,petTaskName: _textFieldController.text,createdAt:DateTime.now(),updatedAt: DateTime.now(),isCheked:false));
+      taskData.add(Datum(id:0,petTaskName: _textFieldController.text,createdAt:DateTime.now(),updatedAt: DateTime.now(),status:0));
+
+      addTask(_textFieldController.text,widget.dogsData.petId,context);
     });
   }
 
@@ -362,6 +375,57 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
   }
 }
 
+Future<void> addTask(String task,int petId,BuildContext context) async {
+
+  var data = jsonEncode({'task_name': task,'pet_id': petId,});
+  var prefs = await SharedPreferences.getInstance();
+  var token = prefs.getString("token");
+  var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.add_task);
+  var response = await http.post(url, body: data, headers: {
+    "Accept": "application/json",
+    "content-type": "application/json",
+    "Authorization": "Bearer $token"
+  });
+  if (response.statusCode == 200) {
+
+    FlutterLogs.logInfo("JsonDataResponse","PawJson", response.body);
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) =>
+          AlertDialog(
+            title: const Text('Message'),
+            content: const Text('Tasks added successfully'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context, 'OK');
+
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+    ).then((value) {
+     // Navigator.pop(context);
+    });
+
+  }else{
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Alert'),
+        content: const Text('Something went wrong,Please try again'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'OK'),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 Widget createTaskListView(List<Datum>? taskList) => ListView.builder(
     shrinkWrap: true,
     physics: ScrollPhysics(),
@@ -374,10 +438,10 @@ Widget createTaskListView(List<Datum>? taskList) => ListView.builder(
           decoration: BoxDecoration(border: Border.all(color: Colors.deepPurple)),
           child: CheckboxListTile(
             title: Text(taskList![index].petTaskName ?? ""),
-            value: taskList[index].isCheked ?? false,
+            value: taskList[index].status==0 ? false:true,
             onChanged: (value) {
               setState(() {
-                taskList[index].isCheked = value ?? false;
+                taskList[index].status = value==false ? 0:1;
               });
             },
           ),
@@ -402,10 +466,10 @@ class TaskView extends StatelessWidget {
             decoration: BoxDecoration(border: Border.all(color: Colors.deepPurple)),
             child: CheckboxListTile(
               title: Text(taskData.petTaskName ?? ""),
-              value: taskData.isCheked?? false,
+              value: taskData.status==0 ? false:true,
               onChanged: (value) {
                 setState(() {
-                  taskData.isCheked = value?? false;
+                  taskData.status = value==false ? 0:1;
                 });
               },
             ),

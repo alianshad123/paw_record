@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_logs/flutter_logs.dart';
 import 'package:paw_record/api/ApiConstants.dart';
 import 'package:paw_record/model/BannerDataModel.dart';
 import 'package:paw_record/model/DogsDataResponseModel.dart';
@@ -188,6 +189,7 @@ Future<List<Datum>?> getBanners(BuildContext context) async {
     "Authorization": "Bearer $token"
   });
   if (response.statusCode == 200) {
+    FlutterLogs.logInfo("JsonDataResponse","PawJson", response.body);
     BannerDataModel _model = bannerDataModelFromJson(response.body);
     ApiConstants.IMAGEURL=_model.imgPath;
     return _model.data;
@@ -357,6 +359,7 @@ Future<List<DogsData>?> getDogsList(BuildContext context) async {
 
   });
   if (response.statusCode == 200) {
+    FlutterLogs.logInfo("JsonDataResponse","PawJson", response.body);
     DogsDataResponseModel _model = dogsDataResponseModelFromJson(response.body);
     ApiConstants.IMAGEURL=_model.imgPath;
     return _model.data;

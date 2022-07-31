@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_logs/flutter_logs.dart';
 import 'package:paw_record/api/ApiConstants.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -323,7 +324,7 @@ signUp(String fullname,String email, String password, BuildContext context) asyn
     //Navigator.pop(context);
     //LoginResponseModel _model = loginResponseModelFromJson(response.body);
     //log(response.toString());
-
+    FlutterLogs.logInfo("JsonDataResponse","PawJson", response.body);
     Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) => SignInScreen()));
 

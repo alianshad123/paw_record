@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_logs/flutter_logs.dart';
 import 'package:paw_record/api/ApiConstants.dart';
 import 'package:paw_record/model/TaskDataModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,8 +27,9 @@ class _TaskListScreenState extends State<TaskListScreen> {
   @override
   void initState() {
     super.initState();
-    tasklist= getTaskList(context);
     petId = widget.petId;
+    tasklist= getTaskList(petId,context);
+
 
 
   }
@@ -114,8 +117,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
 
 
                               taskListData.forEach((element) {
-                                if(element.isCheked?? false){
-                                  updateTask(petId,element.id,"Completed",context);
+                                if(element.status==0 ? false:true){
+                                  updateTask(petId,element.id,"1",context);
 
                                 }
                               });
@@ -152,10 +155,10 @@ class _TaskListScreenState extends State<TaskListScreen> {
             decoration: BoxDecoration(border: Border.all(color: Colors.deepPurple)),
             child: CheckboxListTile(
               title: Text(taskList![index].petTaskName ?? ""),
-              value: taskList[index].isCheked?? false,
+              value: taskList[index].status==0 ? false:true,
               onChanged: (value) {
                 setState(() {
-                  taskList[index].isCheked = value?? false;
+                  taskList[index].status = value==false ? 0:1;
                 });
               },
             ),
@@ -182,12 +185,13 @@ class _TaskListScreenState extends State<TaskListScreen> {
   }
 
 
-  Future<List<Datum>?> getTaskList(BuildContext context) async {
+  Future<List<Datum>?> getTaskList(int petId,BuildContext context) async {
+    var data = jsonEncode({'pet_id': petId});
     var prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("token");
 
     var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.listtask);
-    var response = await http.get(url, headers: {
+    var response = await http.post(url, body: data, headers: {
       "Accept": "application/json",
       "content-type": "application/json",
       "Authorization": "Bearer $token"
@@ -195,6 +199,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
     });
     if (response.statusCode == 200) {
       TaskListDataModel _model = taskListDataModelFromJson(response.body);
+      FlutterLogs.logInfo("JsonDataResponse","PawJson", response.body);
       return _model.data;
     } else {}
   }
@@ -214,6 +219,7 @@ void updateTask(int petId, int taskId, String status, BuildContext context ) asy
     "Authorization": "Bearer $token"
   });
   if (response.statusCode == 200) {
+    FlutterLogs.logInfo("JsonDataResponse","PawJson", response.body);
     showDialog<String>(
         context: context,
         builder: (BuildContext context) =>

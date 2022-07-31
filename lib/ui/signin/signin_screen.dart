@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_logs/flutter_logs.dart';
 import 'package:paw_record/model/LoginResponseModel.dart';
 import 'package:paw_record/ui/home/home_screen.dart';
 import 'package:paw_record/ui/petsitter/petsitterhome/petsitter_home.dart';
@@ -247,6 +248,7 @@ signin(String email, String password, BuildContext context) async {
   });
   if (response.statusCode == 200) {
     Navigator.pop(context);
+    FlutterLogs.logInfo("JsonDataResponse","PawJson", response.body);
     LoginResponseModel _model = loginResponseModelFromJson(response.body);
     _model.data.token;
     save(_model.data.token,_model.type);
