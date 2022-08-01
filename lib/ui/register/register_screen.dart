@@ -24,8 +24,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final fullname_controller = TextEditingController();
   final email_controller = TextEditingController();
   final password_controller = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  AuthMethods authMethods=AuthMethods();
+  void validateAndSave() {
+    final FormState? form = _formKey.currentState;
+    if (form?.validate() == true) {
+      showLoaderDialog(context);
+
+      Map<String,String> userInfoMap ={
+        "name":fullname_controller.text,
+        "email": email_controller.text
+      };
+
+      authMethods.signUpWithEmailAndPassword(email_controller.text,  password_controller.text).then((value) {
+
+        databaseMethods.uploadUserInfo(userInfoMap);
+
+      });
+      signUp(fullname_controller.text,email_controller.text,
+          password_controller.text, context);
+    } else {
+      print('Form is invalid');
+    }
+  }
+
+      AuthMethods authMethods=AuthMethods();
   DatabaseMethods databaseMethods=DatabaseMethods();
   @override
   Widget build(BuildContext context) {
@@ -79,10 +102,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                            padding: EdgeInsets.symmetric(
                                horizontal: 40
                            ),
+          child: Form(
+            key: _formKey,
                            child: Column(
                              children: [
                                SizedBox(height: 10,),
                                TextFormField(
+                                 autovalidateMode:
+                                 AutovalidateMode.onUserInteraction,
+                                 validator: (value){
+                                   if (value?.isEmpty==true) {
+                                     return 'Please enter username';
+                                   }
+                                   if (value!.length <=4 ) {
+                                     return 'username length must be greater than four characters';
+                                   }
+                                   return null;
+                                 },
                                  keyboardType: TextInputType.name,
                                  controller: fullname_controller,
                                  decoration: InputDecoration(
@@ -100,6 +136,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                ),
                                SizedBox(height: 5,),
                                TextFormField(
+                                 autovalidateMode:
+                                 AutovalidateMode.onUserInteraction,
+                                 validator: (value){
+                                   if (value?.isEmpty==true) {
+                                     return 'Please enter email';
+                                   }
+                                   return null;
+                                 },
                                  keyboardType: TextInputType.emailAddress,
                                  controller: email_controller,
                                  decoration: InputDecoration(
@@ -117,6 +161,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                ),
                                SizedBox(height: 5,),
                                TextFormField(
+                                 autovalidateMode:
+                                 AutovalidateMode.onUserInteraction,
+                                 validator: (value){
+                                   if (value?.isEmpty==true) {
+                                     return 'Please enter password';
+                                   }
+                                   if (value!.length <6 ) {
+                                     return 'Password length must be greater than 6 characters';
+                                   }
+                                   return null;
+                                 },
                                  keyboardType: TextInputType.visiblePassword,
                                  controller: password_controller,
                                  decoration: InputDecoration(
@@ -205,26 +260,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                      )
                                  ),
                                  onPressed: () {
-                                   showLoaderDialog(context);
-
-                                   Map<String,String> userInfoMap ={
-                                     "name":fullname_controller.text,
-                                     "email": email_controller.text
-                                   };
-
-                                   authMethods.signUpWithEmailAndPassword(email_controller.text,  password_controller.text).then((value) {
-
-                                     databaseMethods.uploadUserInfo(userInfoMap);
-
-                                   });
-                                   signUp(fullname_controller.text,email_controller.text,
-                                       password_controller.text, context);
+                                  validateAndSave();
 
                                  },
                                )
 
                              ],
                            ),
+          ),
+
                          ),
                          SizedBox(height: 100,)
 

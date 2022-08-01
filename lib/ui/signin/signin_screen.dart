@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:ffi';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_logs/flutter_logs.dart';
@@ -9,6 +11,7 @@ import 'package:paw_record/ui/register/register_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:paw_record/api/ApiConstants.dart';
 import 'package:paw_record/ui/utils/Authmethods.dart';
+import 'package:paw_record/ui/utils/DatabaseMethods.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -22,6 +25,42 @@ class _SignInScreenState extends State<SignInScreen> {
   final email_controller = TextEditingController();
   final password_controller = TextEditingController();
   AuthMethods authMethods=AuthMethods();
+  DatabaseMethods databaseMethods=DatabaseMethods();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  late QuerySnapshot snapshotUserInfo;
+
+  void validateAndSave() {
+    final FormState? form = _formKey.currentState;
+    if (form?.validate()==true) {
+      showLoaderDialog(context);
+      authMethods.signInWithEmailAndPassword(email_controller.text,  password_controller.text).then((value) {
+        FlutterLogs.logInfo("LoggedData","value", value.toString());
+        if(value==null){
+          authMethods.signUpWithEmailAndPassword(email_controller.text,  password_controller.text).then((value) {
+            authMethods.signInWithEmailAndPassword(email_controller.text,  password_controller.text).then((value) {
+              
+              databaseMethods.getUserByEmail(email_controller.text)
+              .then((val){
+                snapshotUserInfo=val;
+              });
+              
+              signin(email_controller.text,
+                  password_controller.text, context);
+            });
+          });
+        }
+
+
+      });
+
+
+
+
+    } else {
+      print('Form is invalid');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +113,8 @@ class _SignInScreenState extends State<SignInScreen> {
                       children: <Widget>[
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 40),
+          child: Form(
+            key: _formKey,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -81,6 +122,13 @@ class _SignInScreenState extends State<SignInScreen> {
                                 height: 10,
                               ),
                               TextFormField(
+                                autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                                validator: (value){
+                                  if (value?.isEmpty==true) {
+                                    return 'Please enter email';
+                                  }
+                                 },
                                 keyboardType: TextInputType.emailAddress,
                                 controller: email_controller,
                                 decoration: InputDecoration(
@@ -101,6 +149,17 @@ class _SignInScreenState extends State<SignInScreen> {
                                 height: 10,
                               ),
                               TextFormField(
+                                autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                                validator: (value){
+                                  if (value?.isEmpty==true) {
+                                    return 'Please enter password';
+                                  }
+                                  if (value!.length <6 ) {
+                                    return 'Password length must be greater than six digits';
+                                  }
+                                  return null;
+                                },
                                 keyboardType: TextInputType.visiblePassword,
                                 controller: password_controller,
                                 decoration: InputDecoration(
@@ -116,9 +175,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                         BorderSide(color: Color(0xFF6200EE)),
                                   ),
                                 ),
-                                validator: (val) => val!.length < 4
-                                    ? 'Your password is too Password too short..'
-                                    : null,
+
                               ),
                               SizedBox(height: 25),
                               Align(
@@ -143,31 +200,16 @@ class _SignInScreenState extends State<SignInScreen> {
                                               side: BorderSide(
                                                   color: const Color(0xFF8017DA))))),
                                   onPressed: () {
-
-                                    showLoaderDialog(context);
-                                    signin(email_controller.text,
-                                        password_controller.text, context);
+                                    validateAndSave();
 
 
-
-                                    authMethods.signInWithEmailAndPassword(email_controller.text,  password_controller.text).then((value) {
-
-
-                                    });
-
-                                    /* String email = email_controller.text;
-                                    String password = password_controller.text;
-
-                                    dynamic response= ApiService().login(
-                                      email,
-                                      password,
-                                    );*/
                                   },
                                 ),
                               )
                             ],
                           ),
                         ),
+    ),
                         SizedBox(height: 100)
                       ],
                     ),

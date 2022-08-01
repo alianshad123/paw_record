@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:intl/intl.dart';
 import 'package:paw_record/model/Message.dart';
+import 'package:paw_record/ui/utils/DatabaseMethods.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
@@ -20,13 +21,92 @@ class _ChatScreenState extends State<ChatScreen> {
     Message("Whatsap", DateTime.now().subtract(Duration(minutes: 1)), false),
   ].reversed.toList();
 
+  DatabaseMethods databaseMethods=DatabaseMethods();
+  TextEditingController  messageController = TextEditingController();
+  late Stream chatMessageStream;
+
+  sendMessage(){
+    if(messageController.text.isNotEmpty){
+      Map<String,String> messageMap= {
+        "message" :messageController.text,
+        "sendBy" :"anshad@gmail.com"
+      };
+     // databaseMethods.getConversationMessages(widget.chatRoomId, messageMap);
+    }
+  }
+
+  @override
+  void initState() {
+    /*databaseMethods.getConversationMessages(widget.charRoomId).then((value){
+
+    })*/
+    super.initState();
+    
+
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(""),
       ),
-      body: Column(
+      body:Container(
+        child: Stack(
+          children: [
+            Container(
+              child: Container(
+                color: Colors.grey,
+                padding: EdgeInsets.symmetric(horizontal: 24,vertical: 16),
+                child: Row(
+                  children: [
+                    Expanded(child: TextField(
+                      controller: messageController,
+                      style: TextStyle(color: Colors.deepPurple),
+                      decoration: InputDecoration(
+                        hintText: "Message..",
+                        hintStyle: TextStyle(color: Colors.black),
+                        border: InputBorder.none
+                      ),
+                    )),
+                    GestureDetector(
+                      onTap: (){
+
+                      },
+                        child:Container(
+                          height: 40,
+                          width: 40,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                const Color(0x36FFFFFF),
+                                const Color(0x0FFFFFFF)
+                              ]
+                            ),
+                            borderRadius: BorderRadius.circular(40)
+                          ),
+                          padding: EdgeInsets.all(12),
+                          child: Icon(
+                            Icons.send,
+                            size: 15,
+                            color: Colors.deepPurple,
+                          )
+                        )
+                    ),
+
+
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
+      )
+
+
+
+      /* Column(
         children: [
           Expanded(
               child: GroupedListView<Message, DateTime>(
@@ -66,6 +146,7 @@ class _ChatScreenState extends State<ChatScreen> {
           Container(
             color: Colors.grey.shade300,
             child: TextField(
+              controller: messageController,
               decoration: const InputDecoration(
                   contentPadding: EdgeInsets.all(12),
                   hintText: "Type your message here..."),
@@ -76,7 +157,7 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           )
         ],
-      ),
+      ),*/
     );
   }
 }

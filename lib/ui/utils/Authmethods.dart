@@ -6,8 +6,6 @@ class AuthMethods {
   Future signInWithEmailAndPassword(String  email,String password) async {
 
     try{
-     // UserCredential userCredential = await FirebaseAuth.instance.signInAnonymously();
-
       UserCredential result = await _auth.signInWithEmailAndPassword(email: email, password: password);
       User? firebaseUser = result.user;
       return _userFromFirebaseUser(firebaseUser);
