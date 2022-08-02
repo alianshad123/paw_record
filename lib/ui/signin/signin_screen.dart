@@ -49,6 +49,9 @@ class _SignInScreenState extends State<SignInScreen> {
                   password_controller.text, context);
             });
           });
+        }else{
+          signin(email_controller.text,
+              password_controller.text, context);
         }
 
 

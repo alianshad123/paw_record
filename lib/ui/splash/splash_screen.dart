@@ -48,7 +48,7 @@ retriveToken(BuildContext context) async {
             () => Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => const LoginScreen())));
   } else {
-    if(type=="CUSTOMER") {
+    if(type=="OWNER") {
 
       Timer(
           const Duration(seconds: 5),

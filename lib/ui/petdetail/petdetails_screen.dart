@@ -10,6 +10,7 @@ import 'package:paw_record/model/TaskDataModel.dart';
 import 'package:paw_record/ui/chat/chat_screen.dart';
 import 'package:paw_record/ui/petsitter/petsittertask/tasklist_screen.dart';
 import 'package:paw_record/ui/signin/signin_screen.dart';
+import 'package:paw_record/ui/utils/DatabaseMethods.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -96,8 +97,23 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
                     child: Container(
 
                        child: GestureDetector(
-                          onTap: () => Navigator.pushReplacement(context,
-                              MaterialPageRoute(builder: (context) => const ChatScreen())),
+                         onTap: () {
+
+                            List<String> users= ["owner@gmail.com","sitter@gamil.com"];
+                            String chatRoomId="owner_sitter";
+
+                            Map<String,dynamic> chatRoomMap= {
+                             "users" :users,
+                              "chatroomId" :"owner_sitter"
+                            };
+                            DatabaseMethods().createChatRoom(chatRoomId, chatRoomMap);
+
+                            Navigator.pushReplacement(context,
+                                MaterialPageRoute(
+                                    builder: (context) =>  ChatScreen(
+                                        chatRoomId: chatRoomId)));
+
+                          },
                           child: Card(
                               elevation: 10,
                               child: Container(
