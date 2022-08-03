@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:intl/intl.dart';
 import 'package:paw_record/model/Message.dart';
+import 'package:paw_record/ui/utils/Constants.dart';
 import 'package:paw_record/ui/utils/DatabaseMethods.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -23,19 +24,31 @@ class _ChatScreenState extends State<ChatScreen> {
     Message("Whatsap", DateTime.now().subtract(Duration(minutes: 1)), false),
   ].reversed.toList();
 
+  late ScrollController _scrollController;
+
   DatabaseMethods databaseMethods=DatabaseMethods();
   TextEditingController  messageController = TextEditingController();
   late Stream chatMessageStream;
+
+  void scrollToBottom() {
+    final bottomOffset = _scrollController.position.maxScrollExtent;
+    _scrollController.animateTo(
+      bottomOffset,
+      duration: Duration(milliseconds: 1000),
+      curve: Curves.easeInOut,
+    );
+  }
 
   Widget ChatMessageList(){
     return StreamBuilder(
       stream: chatMessageStream,
       builder: (context,snapshot){
         return snapshot.hasData ? ListView.builder(
-          itemCount: (snapshot.data as QuerySnapshot).docs.length,
+            controller: _scrollController,
+            itemCount: (snapshot.data as QuerySnapshot).docs.length,
             itemBuilder: (context,index){
             return MessageTile((snapshot.data as QuerySnapshot).docs[index]["message"],
-                (snapshot.data as QuerySnapshot).docs[index]["sendBy"]=="owner@gmail.com");
+                (snapshot.data as QuerySnapshot).docs[index]["sendBy"]==Constants.userEmail);
             }) : Container();
 
       },
@@ -46,7 +59,7 @@ class _ChatScreenState extends State<ChatScreen> {
     if(messageController.text.isNotEmpty){
       Map<String,dynamic> messageMap= {
         "message" :messageController.text,
-        "sendBy" :"owner@gmail.com",
+        "sendBy" :Constants.userEmail,
         "time" :DateTime.now().millisecondsSinceEpoch
       };
       databaseMethods.addConversationMessages(widget.chatRoomId,messageMap);
@@ -56,14 +69,20 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void initState() {
+    _scrollController = ScrollController();
     databaseMethods.getConversationMessages(widget.chatRoomId).then((value){
       setState((){
         chatMessageStream =value;
       });
     });
     super.initState();
-    
 
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
 
@@ -91,8 +110,14 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
       body:Container(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            ChatMessageList(),
+            Expanded(child:
+            Container(
+              margin: const EdgeInsets.only(bottom: 10.0),
+            child:ChatMessageList(),),
+            ),
             Container(
               alignment: Alignment.bottomCenter,
               child: Container(
@@ -102,7 +127,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   children: [
                     Expanded(child: TextField(
                       controller: messageController,
-                      style: TextStyle(color: Colors.deepPurple),
+                      style: TextStyle(color: Colors.black),
                       decoration: InputDecoration(
                         hintText: "Message..",
                         hintStyle: TextStyle(color: Colors.black),
@@ -112,6 +137,8 @@ class _ChatScreenState extends State<ChatScreen> {
                     GestureDetector(
                       onTap: (){
                           sendMessage();
+                          FocusManager.instance.primaryFocus?.unfocus();
+                          scrollToBottom();
                       },
                         child:Container(
                           height: 40,

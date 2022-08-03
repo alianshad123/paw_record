@@ -11,6 +11,7 @@ import 'package:paw_record/ui/register/register_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:paw_record/api/ApiConstants.dart';
 import 'package:paw_record/ui/utils/Authmethods.dart';
+import 'package:paw_record/ui/utils/Constants.dart';
 import 'package:paw_record/ui/utils/DatabaseMethods.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -285,7 +286,7 @@ showLoaderDialog(BuildContext context){
 
 signin(String email, String password, BuildContext context) async {
   var data = jsonEncode({'email': email, 'password': password});
-
+  Constants.userEmail=email;
   var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.login);
   var response = await http.post(url, body: data, headers: {
     "Accept": "application/json",
