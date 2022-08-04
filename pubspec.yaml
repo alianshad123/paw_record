@@ -47,6 +47,8 @@ dependencies:
   firebase_auth: any
   google_sign_in: ^5.4.0
   firebase_storage: ^10.3.4
+  firebase_messaging: any
+  flutter_local_notifications: any
 
 dev_dependencies:
   flutter_test:

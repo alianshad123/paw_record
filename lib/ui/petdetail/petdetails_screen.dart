@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_logs/flutter_logs.dart';
@@ -10,7 +11,9 @@ import 'package:paw_record/model/TaskDataModel.dart';
 import 'package:paw_record/ui/chat/chat_screen.dart';
 import 'package:paw_record/ui/petsitter/petsittertask/tasklist_screen.dart';
 import 'package:paw_record/ui/signin/signin_screen.dart';
+import 'package:paw_record/ui/utils/Constants.dart';
 import 'package:paw_record/ui/utils/DatabaseMethods.dart';
+import 'package:paw_record/ui/utils/HelperFunctions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -24,21 +27,42 @@ class PetDetailsScreen extends StatefulWidget {
 }
 
 class _PetDetailsScreenState extends State<PetDetailsScreen> {
-
   final List<Datum> taskData = <Datum>[];
   final _textFieldController = TextEditingController();
+  DatabaseMethods databaseMethods = DatabaseMethods();
+
+  //late Stream tokenStream;
+  List<String> tokens = [];
+
+  late QuerySnapshot snapshot;
 
   @override
   void initState() {
     super.initState();
 
+    databaseMethods.getTokens("tokenData").then((value) {
+      snapshot = value;
+      snapshot?.docs.forEach((element) {
+        tokens.add(element["token"]);
+      });
+    });
   }
 
   void addItemToList() {
     setState(() {
-      taskData.add(Datum(id:0,petTaskName: _textFieldController.text,createdAt:DateTime.now(),updatedAt: DateTime.now(),status:0));
+      taskData.add(Datum(
+          id: 0,
+          petTaskName: _textFieldController.text,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+          status: 0));
+      addTask(_textFieldController.text, widget.dogsData.petId, context);
 
-      addTask(_textFieldController.text,widget.dogsData.petId,context);
+      var seen = Set<String>();
+      List<String> uniqueTokens =
+          tokens.where((token_) => seen.add(token_)).toList();
+      sendTaskNotification(_textFieldController.text, widget.dogsData.petId,
+          uniqueTokens, context);
     });
   }
 
@@ -69,10 +93,7 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
                 Icons.share_outlined,
                 color: Colors.white,
               ),
-              onPressed: () {
-
-
-              },
+              onPressed: () {},
             )
           ],
         ),
@@ -95,87 +116,85 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
                     top: 370,
                     right: 10,
                     child: Container(
+                      child: GestureDetector(
+                        onTap: () {
+                          List<String> users = [
+                            "owner@gmail.com",
+                            "sitter@gamil.com"
+                          ];
+                          String chatRoomId = "owner_sitter";
 
-                       child: GestureDetector(
-                         onTap: () {
+                          Map<String, dynamic> chatRoomMap = {
+                            "users": users,
+                            "chatroomId": "owner_sitter"
+                          };
+                          DatabaseMethods()
+                              .createChatRoom(chatRoomId, chatRoomMap);
 
-                            List<String> users= ["owner@gmail.com","sitter@gamil.com"];
-                            String chatRoomId="owner_sitter";
-
-                            Map<String,dynamic> chatRoomMap= {
-                             "users" :users,
-                              "chatroomId" :"owner_sitter"
-                            };
-                            DatabaseMethods().createChatRoom(chatRoomId, chatRoomMap);
-
-                            Navigator.pushReplacement(context,
-                                MaterialPageRoute(
-                                    builder: (context) =>  ChatScreen(
-                                        chatRoomId: chatRoomId)));
-
-                          },
-                          child: Card(
-                              elevation: 10,
-                              child: Container(
-                                  height: 40,
-                                  width: 150,
-                                  padding: EdgeInsets.all(5),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        width: 30,
-                                        height: 30,
-                                        child: Container(
-                                          alignment: Alignment.centerLeft,
-                                          child: CircleAvatar(
-                                            backgroundImage: NetworkImage(
-                                                "https://picsum.photos/200/300?random=1"),
-                                            radius: 10.0,
-                                          ),
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      ChatScreen(chatRoomId: chatRoomId)));
+                        },
+                        child: Card(
+                            elevation: 10,
+                            child: Container(
+                                height: 40,
+                                width: 150,
+                                padding: EdgeInsets.all(5),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 30,
+                                      height: 30,
+                                      child: Container(
+                                        alignment: Alignment.centerLeft,
+                                        child: CircleAvatar(
+                                          backgroundImage: NetworkImage(
+                                              "https://picsum.photos/200/300?random=1"),
+                                          radius: 10.0,
                                         ),
                                       ),
-                                      Column(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Ali Anshad',
-                                            style: TextStyle(
-                                                decoration: TextDecoration.none,
-                                                color: Color(0xFF8017DA),
-                                                fontWeight: FontWeight.normal,
-                                                fontSize: 12),
-                                          ),
-                                          Text(
-                                            'Pet owner',
-                                            style: TextStyle(
-                                                decoration: TextDecoration.none,
-                                                fontWeight: FontWeight.normal,
-                                                fontSize: 8),
-                                          )
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        width: 20,
-                                      ),
-                                      Align(
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Ali Anshad',
+                                          style: TextStyle(
+                                              decoration: TextDecoration.none,
+                                              color: Color(0xFF8017DA),
+                                              fontWeight: FontWeight.normal,
+                                              fontSize: 12),
+                                        ),
+                                        Text(
+                                          'Pet owner',
+                                          style: TextStyle(
+                                              decoration: TextDecoration.none,
+                                              fontWeight: FontWeight.normal,
+                                              fontSize: 8),
+                                        )
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      width: 20,
+                                    ),
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Container(
                                         alignment: Alignment.centerRight,
-                                        child: Container(
-                                          alignment: Alignment.centerRight,
-                                          child: Icon(
-                                            Icons.message,
-                                            size: 20,
-                                            color: Colors.grey,
-                                          ),
+                                        child: Icon(
+                                          Icons.message,
+                                          size: 20,
+                                          color: Colors.grey,
                                         ),
-                                      )
-                                    ],
-                                  ))),
-                        ),
-
-
-
-
+                                      ),
+                                    )
+                                  ],
+                                ))),
+                      ),
                     ))
               ],
             ),
@@ -294,19 +313,19 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
                             child: const Text(
                               'Add Tasks',
                               style:
-                              TextStyle(fontSize: 18, color: Colors.white),
+                                  TextStyle(fontSize: 18, color: Colors.white),
                             ),
                             style: ButtonStyle(
                                 padding: MaterialStateProperty.all<EdgeInsets>(
                                     EdgeInsets.fromLTRB(50, 10, 50, 10)),
                                 backgroundColor:
-                                MaterialStateProperty.all<Color>(
-                                    Color(0xFF8017DA)),
+                                    MaterialStateProperty.all<Color>(
+                                        Color(0xFF8017DA)),
                                 shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
+                                        RoundedRectangleBorder>(
                                     RoundedRectangleBorder(
                                         borderRadius:
-                                        BorderRadius.circular(20.0),
+                                            BorderRadius.circular(20.0),
                                         side: BorderSide(
                                             color: const Color(0xFF8017DA))))),
                             onPressed: () {
@@ -329,19 +348,15 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
                             fontSize: 22),
                       ),
                     ),
-
                     ListView.builder(
-                          key: UniqueKey(),
-                          shrinkWrap: true,
-                          physics: ScrollPhysics(),
-                          scrollDirection: Axis.vertical,
-                          itemCount: taskData?.length,
-                          itemBuilder: (context, index) {
-                            return TaskView(taskData![index]);
-                          }
-                      ),
-
-
+                        key: UniqueKey(),
+                        shrinkWrap: true,
+                        physics: ScrollPhysics(),
+                        scrollDirection: Axis.vertical,
+                        itemCount: taskData?.length,
+                        itemBuilder: (context, index) {
+                          return TaskView(taskData![index]);
+                        }),
                     SizedBox(
                       height: 50,
                     ),
@@ -391,9 +406,50 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
   }
 }
 
-Future<void> addTask(String task,int petId,BuildContext context) async {
+Future<void> sendTaskNotification(
+    String text, int petId, List<String> tokens, BuildContext context) async {
+  var prefs = await SharedPreferences.getInstance();
+  var token = prefs.getString("FIREBASE_TOKEN");
+  var data = jsonEncode({
+    "registration_ids": tokens,
+    "notification": {
+      "body": text,
+      "title": "Paw Record task added",
+      "message": text,
+      "android_channel_id": "high_importance_channel",
+      "key1": petId,
+    }
+  });
+  var url = Uri.parse(ApiConstants.firebaseUrl);
+  var response = await http.post(url, body: data, headers: {
+    "Accept": "application/json",
+    "content-type": "application/json",
+    "Authorization": Constants.firebaseServerKey
+  });
+  if (response.statusCode == 200) {
+    FlutterLogs.logInfo("JsonDataResponse", "PawJson", response.body);
+  } else {
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Alert'),
+        content: const Text('Something went wrong,Please try again'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'OK'),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
-  var data = jsonEncode({'task_name': task,'pet_id': petId,});
+Future<void> addTask(String task, int petId, BuildContext context) async {
+  var data = jsonEncode({
+    'task_name': task,
+    'pet_id': petId,
+  });
   var prefs = await SharedPreferences.getInstance();
   var token = prefs.getString("token");
   var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.add_task);
@@ -403,29 +459,25 @@ Future<void> addTask(String task,int petId,BuildContext context) async {
     "Authorization": "Bearer $token"
   });
   if (response.statusCode == 200) {
-
-    FlutterLogs.logInfo("JsonDataResponse","PawJson", response.body);
+    FlutterLogs.logInfo("JsonDataResponse", "PawJson", response.body);
     showDialog<String>(
       context: context,
-      builder: (BuildContext context) =>
-          AlertDialog(
-            title: const Text('Message'),
-            content: const Text('Tasks added successfully'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context, 'OK');
-
-                },
-                child: const Text('OK'),
-              ),
-            ],
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Message'),
+        content: const Text('Tasks added successfully'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context, 'OK');
+            },
+            child: const Text('OK'),
           ),
+        ],
+      ),
     ).then((value) {
-     // Navigator.pop(context);
+      // Navigator.pop(context);
     });
-
-  }else{
+  } else {
     showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
@@ -451,20 +503,20 @@ Widget createTaskListView(List<Datum>? taskList) => ListView.builder(
       return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
         return Container(
-          decoration: BoxDecoration(border: Border.all(color: Colors.deepPurple)),
+          decoration:
+              BoxDecoration(border: Border.all(color: Colors.deepPurple)),
           child: CheckboxListTile(
             title: Text(taskList![index].petTaskName ?? ""),
-            value: taskList[index].status==0 ? false:true,
+            value: taskList[index].status == 0 ? false : true,
             onChanged: (value) {
               setState(() {
-                taskList[index].status = value==false ? 0:1;
+                taskList[index].status = value == false ? 0 : 1;
               });
             },
           ),
         );
       });
     });
-
 
 class TaskView extends StatelessWidget {
   Datum taskData;
@@ -474,23 +526,21 @@ class TaskView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return  StatefulBuilder(
-        builder: (BuildContext context, StateSetter setState)
-        {
-          return Container(
-            margin: EdgeInsets.only(bottom: 5.0),
-            decoration: BoxDecoration(border: Border.all(color: Colors.deepPurple)),
-            child: CheckboxListTile(
-              title: Text(taskData.petTaskName ?? ""),
-              value: taskData.status==0 ? false:true,
-              onChanged: (value) {
-                setState(() {
-                  taskData.status = value==false ? 0:1;
-                });
-              },
-            ),
-          );
-        }
-    );
+    return StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+      return Container(
+        margin: EdgeInsets.only(bottom: 5.0),
+        decoration: BoxDecoration(border: Border.all(color: Colors.deepPurple)),
+        child: CheckboxListTile(
+          title: Text(taskData.petTaskName ?? ""),
+          value: taskData.status == 0 ? false : true,
+          onChanged: (value) {
+            setState(() {
+              taskData.status = value == false ? 0 : 1;
+            });
+          },
+        ),
+      );
+    });
   }
 }

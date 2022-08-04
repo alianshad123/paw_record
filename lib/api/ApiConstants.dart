@@ -1,5 +1,6 @@
 class ApiConstants {
   static String baseUrl = 'http://50.16.174.229/api';
+  static String firebaseUrl = 'https://fcm.googleapis.com/fcm/send';
   static String usersEndpoint = '/login';
   static String login = '/login';
   static String registration = '/registration';

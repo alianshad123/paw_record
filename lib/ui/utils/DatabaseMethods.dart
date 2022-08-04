@@ -40,4 +40,18 @@ class DatabaseMethods{
           .orderBy("time",descending: false)
           .snapshots();
    }
+
+   addToken(String tokenData,tokenMap){
+      FirebaseFirestore.instance.collection("Token")
+          .doc(tokenData)
+          .collection("tokens")
+          .add(tokenMap).catchError((e){print(e.toString());});
+   }
+
+   Future getTokens(String tokenData) async{
+      return await FirebaseFirestore.instance.collection("Token")
+          .doc(tokenData)
+          .collection("tokens").get();
+
+   }
 }
