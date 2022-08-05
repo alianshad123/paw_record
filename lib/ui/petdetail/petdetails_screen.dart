@@ -408,8 +408,6 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
 
 Future<void> sendTaskNotification(
     String text, int petId, List<String> tokens, BuildContext context) async {
-  var prefs = await SharedPreferences.getInstance();
-  var token = prefs.getString("FIREBASE_TOKEN");
   var data = jsonEncode({
     "registration_ids": tokens,
     "notification": {

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:paw_record/ui/dashboard/dashboard_screen.dart';
+import 'package:paw_record/ui/home/home_screen.dart';
+import 'package:paw_record/ui/petsitter/petsitterdash/petsitter_dashboard.dart';
+import 'package:paw_record/ui/petsitter/petsitterhome/petsitter_home.dart';
 import 'package:paw_record/ui/splash/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -120,6 +124,22 @@ Widget makeItemContainer(
         onTap: () async {
           if (label == "Logout") {
             showAlertDialog(context);
+          }else if(label == "My pets") {
+
+            var prefs = await SharedPreferences.getInstance();
+            var userType = prefs.getString("user_type");
+            if(userType=="OWNER") {
+
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()));
+
+            }else{
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const PetSitterHomeScreen()));
+            }
+
+
+
           }
         },
         child: Card(

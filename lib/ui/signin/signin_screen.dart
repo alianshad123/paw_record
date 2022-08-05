@@ -13,6 +13,7 @@ import 'package:paw_record/api/ApiConstants.dart';
 import 'package:paw_record/ui/utils/Authmethods.dart';
 import 'package:paw_record/ui/utils/Constants.dart';
 import 'package:paw_record/ui/utils/DatabaseMethods.dart';
+import 'package:paw_record/ui/utils/HelperFunctions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -298,6 +299,7 @@ signin(String email, String password, BuildContext context) async {
     LoginResponseModel _model = loginResponseModelFromJson(response.body);
     _model.data.token;
     save(_model.data.token,_model.type);
+    HelperFunctions.saveUserType(_model.type);
 
     if(_model.type=="OWNER") {
 
@@ -308,6 +310,7 @@ signin(String email, String password, BuildContext context) async {
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) => const PetSitterHomeScreen()));
     }
+
 
   } else {
     Navigator.pop(context);

@@ -1,9 +1,14 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:paw_record/ui/activities/activities_screen.dart';
 import 'package:paw_record/ui/dashboard/dashboard_screen.dart';
 import 'package:paw_record/ui/detailviews/detailview_screen.dart';
 import 'package:paw_record/ui/profile/profile_screen.dart';
 import 'package:paw_record/ui/register/register_screen.dart';
+import 'package:paw_record/ui/utils/Constants.dart';
+import 'package:paw_record/ui/utils/DatabaseMethods.dart';
+import 'package:paw_record/ui/utils/HelperFunctions.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -23,6 +28,28 @@ class _HomeScreenState extends State<HomeScreen> {
 
       const ProfileScreen()
     ];
+  DatabaseMethods databaseMethods=DatabaseMethods();
+
+  @override
+  void initState() {
+    super.initState();
+    getToken();
+  }
+  late String token;
+  getToken() async {
+    token = (await FirebaseMessaging.instance.getToken())!;
+    var prefs = await SharedPreferences.getInstance();
+    var sp_token = prefs.getString("FIREBASE_TOKEN");
+
+    if(sp_token?.isEmpty==true||sp_token==null) {
+      Map<String, dynamic> tokenMap = {
+        "token": token,
+        "user": Constants.userEmail
+      };
+      databaseMethods.addToken("tokenData", tokenMap);
+      HelperFunctions.saveFirebaseToken(token);
+    }
+  }
 
     @override
     Widget build(BuildContext context) {

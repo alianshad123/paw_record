@@ -7,6 +7,7 @@ import 'package:paw_record/ui/splash/splash_screen.dart';
 import 'package:paw_record/ui/utils/Constants.dart';
 import 'package:paw_record/ui/utils/DatabaseMethods.dart';
 import 'package:paw_record/ui/utils/HelperFunctions.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -115,24 +116,25 @@ class MyApp extends StatefulWidget {
       }
     });
 
-    getToken();
+    //getToken();
   }
 
 
-  late String token;
+  /*late String token;
   getToken() async {
     token = (await FirebaseMessaging.instance.getToken())!;
-    HelperFunctions.saveFirebaseToken(token);
+    var prefs = await SharedPreferences.getInstance();
+    var sp_token = prefs.getString("FIREBASE_TOKEN");
 
-    Map<String,dynamic> tokenMap= {
-      "token" :token,
-      "user" :Constants.userEmail
-    };
-    databaseMethods.addToken("tokenData",tokenMap);
-
-
-
-  }
+    if(sp_token?.isEmpty==true||sp_token==null) {
+      Map<String, dynamic> tokenMap = {
+        "token": token,
+        "user": Constants.userEmail
+      };
+      databaseMethods.addToken("tokenData", tokenMap);
+      HelperFunctions.saveFirebaseToken(token);
+    }
+  }*/
 
 }
 
