@@ -3,7 +3,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
    <application
-        android:label="paw_record"
+        android:label="Paw Record"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

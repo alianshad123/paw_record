@@ -49,10 +49,16 @@ dependencies:
   firebase_storage: ^10.3.4
   firebase_messaging: any
   flutter_local_notifications: any
+  flutter_launcher_icons: ^0.9.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/paw_record.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
