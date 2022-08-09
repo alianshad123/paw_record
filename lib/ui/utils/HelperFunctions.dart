@@ -5,6 +5,7 @@ class HelperFunctions{
   static String spUserEmail="USEREMAIL";
   static String firebaseToken="FIREBASE_TOKEN";
   static String USER_TYPE="user_type";
+  static String SITTER_EMAIL="sitter_email";
 
 
   static Future<bool> saveUserEmail(String email) async{
@@ -27,6 +28,11 @@ static Future<String?> getUserEmail() async {
   static Future<bool> saveUserType(String userType) async{
     SharedPreferences preferences= await SharedPreferences.getInstance();
     return await preferences.setString(USER_TYPE, userType);
+  }
+
+  static Future<bool> saveSitterEmail(String email) async{
+    SharedPreferences preferences= await SharedPreferences.getInstance();
+    return await preferences.setString(SITTER_EMAIL, email);
   }
 
   ////

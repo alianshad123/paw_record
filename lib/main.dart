@@ -74,10 +74,13 @@ class MyApp extends StatefulWidget {
     InitializationSettings(android: initialzationSettingsAndroid);
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
       if (notification != null && android != null) {
+        var prefs = await SharedPreferences.getInstance();
+
+
         flutterLocalNotificationsPlugin.show(
             notification.hashCode,
             notification.title,

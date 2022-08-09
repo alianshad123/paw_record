@@ -53,6 +53,8 @@ class DogsData {
     required this.petPic,
     required this.createdAt,
     required this.updatedAt,
+    required this.ownerName,
+    required this.ownerEmail,
   });
 
   int petId;
@@ -70,6 +72,9 @@ class DogsData {
   String petPic;
   DateTime createdAt;
   DateTime updatedAt;
+  String ownerName;
+  String ownerEmail;
+
 
   factory DogsData.fromJson(Map<String, dynamic> json) => DogsData(
     petId: json["pet_id"],
@@ -87,6 +92,8 @@ class DogsData {
     petPic: json["pet_pic"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
+    ownerName: json["owner_name"],
+    ownerEmail: json["owner_email"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -105,5 +112,7 @@ class DogsData {
     "pet_pic": petPic,
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
+    "owner_name": ownerName,
+    "owner_email": ownerEmail,
   };
 }

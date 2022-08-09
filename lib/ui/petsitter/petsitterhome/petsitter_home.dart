@@ -39,11 +39,12 @@ class _PetSitterHomeScreenState extends State<PetSitterHomeScreen> {
     token = (await FirebaseMessaging.instance.getToken())!;
     var prefs = await SharedPreferences.getInstance();
     var sp_token = prefs.getString("FIREBASE_TOKEN");
+    var userEmail = prefs.getString("USEREMAIL");
 
     if(sp_token?.isEmpty==true||sp_token==null) {
       Map<String, dynamic> tokenMap = {
         "token": token,
-        "user": Constants.userEmail
+        "user": userEmail
       };
       databaseMethods.addToken("tokenData", tokenMap);
       HelperFunctions.saveFirebaseToken(token);

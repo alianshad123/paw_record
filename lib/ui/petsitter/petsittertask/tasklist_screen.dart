@@ -200,7 +200,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
     if (response.statusCode == 200) {
       TaskListDataModel _model = taskListDataModelFromJson(response.body);
       FlutterLogs.logInfo("JsonDataResponse","PawJson", response.body);
-      return _model.data;
+      return _model.data.where ((element) =>
+        element.status==0).toList();
     } else {}
   }
   

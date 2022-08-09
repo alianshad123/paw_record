@@ -287,7 +287,6 @@ showLoaderDialog(BuildContext context){
 
 signin(String email, String password, BuildContext context) async {
   var data = jsonEncode({'email': email, 'password': password});
-  Constants.userEmail=email;
   var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.login);
   var response = await http.post(url, body: data, headers: {
     "Accept": "application/json",
@@ -300,6 +299,14 @@ signin(String email, String password, BuildContext context) async {
     _model.data.token;
     save(_model.data.token,_model.type);
     HelperFunctions.saveUserType(_model.type);
+    if(_model.data.sitterDetails.isNotEmpty) {
+      var sitterEmail = _model.data.sitterDetails?.first?.email;
+      HelperFunctions.saveSitterEmail(sitterEmail!);
+    }
+    if(_model.data.userDetails.email.isNotEmpty) {
+      var userEmail = _model.data.userDetails.email;
+      HelperFunctions.saveUserEmail(userEmail);
+    }
 
     if(_model.type=="OWNER") {
 

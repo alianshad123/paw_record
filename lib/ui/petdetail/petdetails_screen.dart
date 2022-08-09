@@ -117,84 +117,94 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
                     right: 10,
                     child: Container(
                       child: GestureDetector(
-                        onTap: () {
-                          List<String> users = [
-                            "owner@gmail.com",
-                            "sitter@gamil.com"
-                          ];
-                          String chatRoomId = "owner_sitter";
+                          onTap: () async {
+                            /*var prefs = await SharedPreferences.getInstance();
+                            var userEmail = prefs.getString("USEREMAIL");
+                            var sitterEmail = prefs.getString("sitter_email");
+                            var userType = prefs.getString("user_type");
+                            if(userType=="OWNER") {
 
-                          Map<String, dynamic> chatRoomMap = {
-                            "users": users,
-                            "chatroomId": "owner_sitter"
-                          };
-                          DatabaseMethods()
-                              .createChatRoom(chatRoomId, chatRoomMap);
+                            }else{
 
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      ChatScreen(chatRoomId: chatRoomId)));
-                        },
-                        child: Card(
-                            elevation: 10,
-                            child: Container(
-                                height: 40,
-                                width: 150,
-                                padding: EdgeInsets.all(5),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 30,
-                                      height: 30,
-                                      child: Container(
-                                        alignment: Alignment.centerLeft,
-                                        child: CircleAvatar(
-                                          backgroundImage: NetworkImage(
-                                              "https://picsum.photos/200/300?random=1"),
-                                          radius: 10.0,
-                                        ),
-                                      ),
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Ali Anshad',
-                                          style: TextStyle(
-                                              decoration: TextDecoration.none,
-                                              color: Color(0xFF8017DA),
-                                              fontWeight: FontWeight.normal,
-                                              fontSize: 12),
-                                        ),
-                                        Text(
-                                          'Pet owner',
-                                          style: TextStyle(
-                                              decoration: TextDecoration.none,
-                                              fontWeight: FontWeight.normal,
-                                              fontSize: 8),
-                                        )
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      width: 20,
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Container(
-                                        alignment: Alignment.centerRight,
-                                        child: Icon(
-                                          Icons.message,
-                                          size: 20,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ))),
-                      ),
+                            }*/
+
+
+                            var prefs = await SharedPreferences.getInstance();
+                            var userEmail = prefs.getString("USEREMAIL");
+                            var sitterEmail = prefs.getString("sitter_email");
+
+
+                            List<String> users = [
+                              userEmail ?? "",
+                              sitterEmail ?? ""
+                            ];
+                            String chatRoomId = getChatRoomId(userEmail,sitterEmail);
+
+                            Map<String, dynamic> chatRoomMap = {
+                              "users": users,
+                              "chatroomId": chatRoomId
+                            };
+                            DatabaseMethods()
+                                .createChatRoom(chatRoomId, chatRoomMap);
+
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        ChatScreen(chatRoomId: chatRoomId)));
+                          },
+                          child: Wrap(
+                            children: [
+                              Card(
+                                  elevation: 10,
+                                  child: Container(
+                                      height: 40,
+                                      padding: EdgeInsets.all(5),
+                                      child: Row(
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Ali Anshad',
+                                                style: TextStyle(
+                                                    decoration:
+                                                        TextDecoration.none,
+                                                    color: Color(0xFF8017DA),
+                                                    fontWeight:
+                                                        FontWeight.normal,
+                                                    fontSize: 12),
+                                              ),
+                                              Text(
+                                                'Pet owner',
+                                                style: TextStyle(
+                                                    decoration:
+                                                        TextDecoration.none,
+                                                    fontWeight:
+                                                        FontWeight.normal,
+                                                    fontSize: 8),
+                                              )
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            width: 20,
+                                          ),
+                                          Align(
+                                            alignment: Alignment.centerRight,
+                                            child: Container(
+                                              alignment: Alignment.centerRight,
+                                              child: Icon(
+                                                Icons.message,
+                                                size: 20,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ))),
+                            ],
+                          )),
                     ))
               ],
             ),
@@ -404,6 +414,13 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
       },
     );
   }
+}
+
+String getChatRoomId(userEmail, sitterEmail) {
+  String uEmail = userEmail.substring(0, userEmail.indexOf('@'));
+  String sEmail = sitterEmail.substring(0, userEmail.indexOf('@'));
+  return uEmail+sEmail;
+
 }
 
 Future<void> sendTaskNotification(

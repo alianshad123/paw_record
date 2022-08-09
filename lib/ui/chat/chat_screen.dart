@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:paw_record/model/Message.dart';
 import 'package:paw_record/ui/utils/Constants.dart';
 import 'package:paw_record/ui/utils/DatabaseMethods.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ChatScreen extends StatefulWidget {
   final String chatRoomId;
@@ -25,6 +26,7 @@ class _ChatScreenState extends State<ChatScreen> {
   ].reversed.toList();
 
   late ScrollController _scrollController;
+  late String userEmail;
 
   DatabaseMethods databaseMethods=DatabaseMethods();
   TextEditingController  messageController = TextEditingController();
@@ -40,6 +42,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget ChatMessageList(){
+
     return StreamBuilder(
       stream: chatMessageStream,
       builder: (context,snapshot){
@@ -48,7 +51,7 @@ class _ChatScreenState extends State<ChatScreen> {
             itemCount: (snapshot.data as QuerySnapshot).docs.length,
             itemBuilder: (context,index){
             return MessageTile((snapshot.data as QuerySnapshot).docs[index]["message"],
-                (snapshot.data as QuerySnapshot).docs[index]["sendBy"]==Constants.userEmail);
+                (snapshot.data as QuerySnapshot).docs[index]["sendBy"]==userEmail);
             }) : Container();
 
       },
@@ -59,7 +62,7 @@ class _ChatScreenState extends State<ChatScreen> {
     if(messageController.text.isNotEmpty){
       Map<String,dynamic> messageMap= {
         "message" :messageController.text,
-        "sendBy" :Constants.userEmail,
+        "sendBy" :userEmail,
         "time" :DateTime.now().millisecondsSinceEpoch
       };
       databaseMethods.addConversationMessages(widget.chatRoomId,messageMap);
@@ -74,6 +77,10 @@ class _ChatScreenState extends State<ChatScreen> {
       setState((){
         chatMessageStream =value;
       });
+    });
+
+   getUserEmail().then((value) {
+      userEmail=value;
     });
     super.initState();
 
@@ -226,6 +233,12 @@ class _ChatScreenState extends State<ChatScreen> {
       ),*/
     );
   }
+}
+
+Future<String> getUserEmail()   async {
+   var prefs = await SharedPreferences.getInstance();
+   var userEmail = prefs.getString("USEREMAIL");
+   return userEmail.toString();
 }
 
 class  MessageTile extends StatelessWidget {

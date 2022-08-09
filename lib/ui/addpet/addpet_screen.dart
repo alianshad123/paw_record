@@ -544,21 +544,6 @@ class _AddPetScreenState extends State<AddPetScreen> {
                       ],
                     ),
 
-                    /* makeAdditionalOptions(
-                        label: "Neutered", isSWitch: isSwitched),
-                    makeAdditionalOptions(
-                        label: "Vaccinated", isSWitch: isSwitched),*/
-                    /*makeAdditionalOptions(
-                        label: "Friendly with dogs", isSWitch: isSwitched),
-                    makeAdditionalOptions(
-                        label: "Friendly with cats", isSWitch: isSwitched),
-                    makeAdditionalOptions(
-                        label: "Medical Info", isSWitch: isSwitched),
-                    makeAdditionalOptions(
-                        label: "Vaccine info", isSWitch: isSwitched),
-                    makeAdditionalOptions(
-                        label: "Doctor info", isSWitch: isSwitched),
-                    makeAdditionalOptions(label: "Food", isSWitch: isSwitched),*/
                     SizedBox(height: 25),
                     Container(
                       padding: EdgeInsets.fromLTRB(0, 10, 40, 0),
@@ -699,46 +684,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
         )));
   }
 
-
-
-
 }
-
-/*class BasicDateField extends StatelessWidget {
-  final format = DateFormat("yyyy-MM-dd");
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(children: <Widget>[
-      Container(
-        padding: EdgeInsets.fromLTRB(0, 10, 40, 0),
-        alignment: Alignment.topLeft,
-        child: Text(
-          'DOB',
-
-          style: TextStyle(
-              decoration: TextDecoration.none,
-              color: Color(0xFF070707),
-              fontWeight: FontWeight.normal,
-              fontSize: 15),
-        ),
-      ),
-      DateTimeField(
-        format: format,
-        controller: ,
-        onShowPicker: (context, currentValue) {
-          return showDatePicker(
-              context: context,
-              firstDate: DateTime(1900),
-              initialDate: currentValue ?? DateTime.now(),
-              lastDate: DateTime(2100));
-        },
-      ),
-    ]);
-  }
-}*/
-
-
 
 
 Widget createToggleListView(List<Data>? toggleList) =>ListView.builder(
