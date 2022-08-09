@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:paw_record/ui/activities/activities_screen.dart';
 import 'package:paw_record/ui/dashboard/dashboard_screen.dart';
 import 'package:paw_record/ui/home/home_screen.dart';
 import 'package:paw_record/ui/login/login_screen.dart';

@@ -50,6 +50,7 @@ dependencies:
   firebase_messaging: any
   flutter_local_notifications: any
   flutter_launcher_icons: ^0.9.3
+  panorama: ^0.4.1
 
 dev_dependencies:
   flutter_test:
@@ -58,7 +59,8 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/paw_record.png"
+  image_path: "assets/pawprint.png"
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -81,6 +83,7 @@ flutter:
     - images/slider_one.jpg
     - images/slider_two.jpg
     - images/slider_three.jpg
+    - assets/
   fonts:
     - family: Quicksand
       fonts:
@@ -89,6 +92,9 @@ flutter:
         - asset: fonts/Quicksand-Regular.ttf
         - asset: fonts/Quicksand-Light.ttf
         - asset: fonts/Quicksand-SemiBold.ttf
+
+
+
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
