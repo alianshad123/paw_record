@@ -49,7 +49,7 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
   }
 
   void addItemToList() {
-    setState(() {
+    setState(() async {
       taskData.add(Datum(
           id: 0,
           petTaskName: _textFieldController.text,
@@ -61,8 +61,10 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
       var seen = Set<String>();
       List<String> uniqueTokens =
           tokens.where((token_) => seen.add(token_)).toList();
+      var prefs = await SharedPreferences.getInstance();
+      var sitterEmail = prefs.getString("sitter_email");
       sendTaskNotification(_textFieldController.text, widget.dogsData.petId,
-          uniqueTokens, context);
+          uniqueTokens,sitterEmail ?? "", context);
     });
   }
 
@@ -423,16 +425,19 @@ String getChatRoomId(userEmail, sitterEmail) {
 
 }
 
-Future<void> sendTaskNotification(
-    String text, int petId, List<String> tokens, BuildContext context) async {
+Future<void> sendTaskNotification (
+
+
+
+    String text, int petId, List<String> tokens, String sitterEmail,BuildContext context) async {
   var data = jsonEncode({
     "registration_ids": tokens,
     "notification": {
       "body": text,
-      "title": "Paw Record task added",
+      "title": "Paw Record: New task assigned",
       "message": text,
       "android_channel_id": "high_importance_channel",
-      "key1": petId,
+      "key1": sitterEmail,
     }
   });
   var url = Uri.parse(ApiConstants.firebaseUrl);

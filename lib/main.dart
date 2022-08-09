@@ -79,23 +79,27 @@ class MyApp extends StatefulWidget {
       AndroidNotification? android = message.notification?.android;
       if (notification != null && android != null) {
         var prefs = await SharedPreferences.getInstance();
+        var userType = prefs.getString("user_type");
+        if(userType=="OWNER") {
 
+        }else{
 
-        flutterLocalNotificationsPlugin.show(
-            notification.hashCode,
-            notification.title,
-            notification.body,
-            NotificationDetails(
-              android: AndroidNotificationDetails(
-                channel.id,
-                channel.name,
-                channelDescription: channel.description,
-                color: Colors.blue,
-                // TODO add a proper drawable resource to android, for now using
-                //      one that already exists in example app.
-                icon: "@mipmap/ic_launcher",
-              ),
-            ));
+          flutterLocalNotificationsPlugin.show(
+              notification.hashCode,
+              notification.title,
+              notification.body,
+              NotificationDetails(
+                android: AndroidNotificationDetails(
+                  channel.id,
+                  channel.name,
+                  channelDescription: channel.description,
+                  color: Colors.blue,
+                  // TODO add a proper drawable resource to android, for now using
+                  //      one that already exists in example app.
+                  icon: "@mipmap/ic_launcher",
+                ),
+              ));
+        }
       }
     });
 
