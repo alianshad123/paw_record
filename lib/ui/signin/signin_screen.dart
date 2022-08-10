@@ -306,6 +306,8 @@ signin(String email, String password, BuildContext context) async {
     if(_model.data.userDetails.email.isNotEmpty) {
       var userEmail = _model.data.userDetails.email;
       HelperFunctions.saveUserEmail(userEmail);
+      var userName = _model.data.userDetails.name;
+      HelperFunctions.saveUserName(userName);
     }
 
     if(_model.type=="OWNER") {

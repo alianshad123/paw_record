@@ -9,8 +9,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class PetSitterDetailScreen extends StatelessWidget {
   final DogsData dogsData;
+  final String? username;
+  final String? userType;
 
-  PetSitterDetailScreen(this.dogsData, {Key? key}) : super(key: key);
+  PetSitterDetailScreen(this.dogsData, this.username,this.userType,{Key? key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +97,7 @@ class PetSitterDetailScreen extends StatelessWidget {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                'Ali Anshad',
+                                                username??"",
                                                 style: TextStyle(
                                                     decoration:
                                                         TextDecoration.none,
@@ -104,7 +107,7 @@ class PetSitterDetailScreen extends StatelessWidget {
                                                     fontSize: 12),
                                               ),
                                               Text(
-                                                'Pet owner',
+                                              userType??"",
                                                 style: TextStyle(
                                                     decoration:
                                                         TextDecoration.none,

@@ -13,6 +13,8 @@ class ApiConstants {
   static String listtask ='/getTaskListFromSitter';
   static String update_pet_task ='/updateTaskStatusFromSitter';
   static String add_task ='/createTaskFromOwner';
+  static String listownertask ='/getTaskListFromOwner';
+  static String sitter_reg = '/createSetterFromOwner';
 
   static String IMAGEURL="";
 

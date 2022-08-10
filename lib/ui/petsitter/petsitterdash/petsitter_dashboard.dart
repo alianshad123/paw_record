@@ -266,10 +266,15 @@ class DogsImageView extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return GestureDetector(
-        onTap: () {
+        onTap: () async {
+
+          var prefs = await SharedPreferences.getInstance();
+          var userName = prefs.getString("USER_NAME")!;
+          var userType = prefs.getString("user_type")!;
+
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) =>  PetSitterDetailScreen(dogsData)),
+            MaterialPageRoute(builder: (context) =>  PetSitterDetailScreen(dogsData,userName,userType)),
           );
         },
         child: Container(

@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_logs/flutter_logs.dart';
 import 'package:paw_record/api/ApiConstants.dart';
 import 'package:paw_record/model/DogsDataResponseModel.dart';
-import 'package:paw_record/model/TaskDataModel.dart';
-import 'package:paw_record/model/TaskDataModel.dart';
+import 'package:paw_record/model/OwnerTaskList.dart';
+
 import 'package:paw_record/ui/chat/chat_screen.dart';
 import 'package:paw_record/ui/petsitter/petsittertask/tasklist_screen.dart';
 import 'package:paw_record/ui/signin/signin_screen.dart';
@@ -31,10 +31,17 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
   final _textFieldController = TextEditingController();
   DatabaseMethods databaseMethods = DatabaseMethods();
 
+  String? userName;
+  String? userType;
+
+
   //late Stream tokenStream;
   List<String> tokens = [];
 
   late QuerySnapshot snapshot;
+  late Future<List<Datum>?> tasklist;
+  late List<Datum> taskListData;
+  late int petId;
 
   @override
   void initState() {
@@ -46,17 +53,61 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
         tokens.add(element["token"]);
       });
     });
+    petId=widget.dogsData.petId;
+    tasklist= getTaskList(petId,context);
+
+    getUserName().then((value) {
+      setState(() {
+        userName = value;
+      });
+    });
+    getUserType().then((value) {
+      setState(() {
+        userType = value;
+      });
+    });
+  }
+
+  Future<String> getUserName() async {
+    var prefs = await SharedPreferences.getInstance();
+    var userName = prefs.getString("USER_NAME")!;
+    return userName;
+  }
+
+  Future<String> getUserType() async {
+    var prefs = await SharedPreferences.getInstance();
+    var userType = prefs.getString("user_type")!;
+    return userType;
+  }
+
+  Future<List<Datum>?> getTaskList(int petId,BuildContext context) async {
+    var data = jsonEncode({'pet_id': petId});
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("token");
+
+    var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.listownertask);
+    var response = await http.post(url, body: data, headers: {
+      "Accept": "application/json",
+      "content-type": "application/json",
+      "Authorization": "Bearer $token"
+
+    });
+    if (response.statusCode == 200) {
+      OwnerTaskList _model = ownerTaskListFromJson(response.body);
+      FlutterLogs.logInfo("JsonDataResponse","PawJson", response.body);
+      return _model.data;
+    } else {}
   }
 
   void addItemToList() {
     setState(() async {
-      taskData.add(Datum(
+      /*taskData.add(Datum(
           id: 0,
           petTaskName: _textFieldController.text,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
-          status: 0));
-      addTask(_textFieldController.text, widget.dogsData.petId, context);
+          status: 0));*/
+      addTask(_textFieldController.text, widget.dogsData.petId, context,widget.dogsData);
 
       var seen = Set<String>();
       List<String> uniqueTokens =
@@ -169,7 +220,7 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                'Ali Anshad',
+                                                userName??"",
                                                 style: TextStyle(
                                                     decoration:
                                                         TextDecoration.none,
@@ -179,7 +230,7 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
                                                     fontSize: 12),
                                               ),
                                               Text(
-                                                'Pet owner',
+                                                userType??"",
                                                 style: TextStyle(
                                                     decoration:
                                                         TextDecoration.none,
@@ -317,35 +368,8 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
                     SizedBox(
                       height: 10,
                     ),
-                    Container(
-                      margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                      child: SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            child: const Text(
-                              'Add Tasks',
-                              style:
-                                  TextStyle(fontSize: 18, color: Colors.white),
-                            ),
-                            style: ButtonStyle(
-                                padding: MaterialStateProperty.all<EdgeInsets>(
-                                    EdgeInsets.fromLTRB(50, 10, 50, 10)),
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        Color(0xFF8017DA)),
-                                shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(20.0),
-                                        side: BorderSide(
-                                            color: const Color(0xFF8017DA))))),
-                            onPressed: () {
-                              _displayTextInputDialog(context);
-                            },
-                          )),
-                    ),
-                    SizedBox(
+
+                   /* SizedBox(
                       height: 10,
                     ),
                     Container(
@@ -359,8 +383,69 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
                             fontWeight: FontWeight.bold,
                             fontSize: 22),
                       ),
+                    ),*/
+
+                    Container(
+                        margin: const EdgeInsets.only(left: 15.0,top: 0.0,right: 15.0,bottom:0.0),
+                        child: Column(
+                          children: [
+                            SizedBox(height: 10),
+                            Column(
+                              children: [
+
+
+                                FutureBuilder<List<Datum>?>(
+                                  future: tasklist,
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      taskListData =  snapshot.data!;
+                                      return  createTaskListView(snapshot.data);
+
+
+                                    } else if (snapshot.hasError) {
+                                      return Text('${snapshot.error}');
+                                    }
+
+                                    // By default, show a loading spinner.
+                                    return const CircularProgressIndicator();
+                                  },
+                                ),
+                                SizedBox(height: 10),
+
+                              ],
+                            ),
+                            SizedBox(height: 10),
+                          ],
+                        )),
+                    Container(
+                      margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                      child: SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            child: const Text(
+                              'Add Tasks',
+                              style:
+                              TextStyle(fontSize: 18, color: Colors.white),
+                            ),
+                            style: ButtonStyle(
+                                padding: MaterialStateProperty.all<EdgeInsets>(
+                                    EdgeInsets.fromLTRB(50, 10, 50, 10)),
+                                backgroundColor:
+                                MaterialStateProperty.all<Color>(
+                                    Color(0xFF8017DA)),
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                        borderRadius:
+                                        BorderRadius.circular(20.0),
+                                        side: BorderSide(
+                                            color: const Color(0xFF8017DA))))),
+                            onPressed: () {
+                              _displayTextInputDialog(context);
+                            },
+                          )),
                     ),
-                    ListView.builder(
+                   /* ListView.builder(
                         key: UniqueKey(),
                         shrinkWrap: true,
                         physics: ScrollPhysics(),
@@ -368,7 +453,7 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
                         itemCount: taskData?.length,
                         itemBuilder: (context, index) {
                           return TaskView(taskData![index]);
-                        }),
+                        }),*/
                     SizedBox(
                       height: 50,
                     ),
@@ -406,7 +491,6 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
               child: Text('OK'),
               onPressed: () {
                 Navigator.pop(context);
-
                 //remainderList= getRemainders(context);
                 addItemToList();
               },
@@ -426,19 +510,17 @@ String getChatRoomId(userEmail, sitterEmail) {
 }
 
 Future<void> sendTaskNotification (
-
-
-
-    String text, int petId, List<String> tokens, String sitterEmail,BuildContext context) async {
+    String task, int petId, List<String> tokens, String sitterEmail,BuildContext context) async {
   var data = jsonEncode({
     "registration_ids": tokens,
     "notification": {
-      "body": text,
-      "title": "Paw Record: New task assigned",
-      "message": text,
+      "body": sitterEmail,
+      "title": "New task assigned: "+task,
+      "message": task,
       "android_channel_id": "high_importance_channel",
-      "key1": sitterEmail,
-    }
+      "titleLocKey": sitterEmail,
+    },
+
   });
   var url = Uri.parse(ApiConstants.firebaseUrl);
   var response = await http.post(url, body: data, headers: {
@@ -465,7 +547,7 @@ Future<void> sendTaskNotification (
   }
 }
 
-Future<void> addTask(String task, int petId, BuildContext context) async {
+Future<void> addTask(String task, int petId, BuildContext context, DogsData dogsData) async {
   var data = jsonEncode({
     'task_name': task,
     'pet_id': petId,
@@ -479,6 +561,7 @@ Future<void> addTask(String task, int petId, BuildContext context) async {
     "Authorization": "Bearer $token"
   });
   if (response.statusCode == 200) {
+
     FlutterLogs.logInfo("JsonDataResponse", "PawJson", response.body);
     showDialog<String>(
       context: context,
@@ -489,6 +572,10 @@ Future<void> addTask(String task, int petId, BuildContext context) async {
           TextButton(
             onPressed: () {
               Navigator.pop(context, 'OK');
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) =>  PetDetailsScreen(dogsData)),
+              );
             },
             child: const Text('OK'),
           ),
@@ -497,6 +584,7 @@ Future<void> addTask(String task, int petId, BuildContext context) async {
     ).then((value) {
       // Navigator.pop(context);
     });
+
   } else {
     showDialog<String>(
       context: context,
@@ -514,6 +602,7 @@ Future<void> addTask(String task, int petId, BuildContext context) async {
   }
 }
 
+
 Widget createTaskListView(List<Datum>? taskList) => ListView.builder(
     shrinkWrap: true,
     physics: ScrollPhysics(),
@@ -523,15 +612,16 @@ Widget createTaskListView(List<Datum>? taskList) => ListView.builder(
       return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
         return Container(
+          margin: EdgeInsets.only(bottom: 5.0),
           decoration:
               BoxDecoration(border: Border.all(color: Colors.deepPurple)),
           child: CheckboxListTile(
             title: Text(taskList![index].petTaskName ?? ""),
             value: taskList[index].status == 0 ? false : true,
             onChanged: (value) {
-              setState(() {
+              /*setState(() {
                 taskList[index].status = value == false ? 0 : 1;
-              });
+              });*/
             },
           ),
         );
@@ -555,9 +645,9 @@ class TaskView extends StatelessWidget {
           title: Text(taskData.petTaskName ?? ""),
           value: taskData.status == 0 ? false : true,
           onChanged: (value) {
-            setState(() {
+           /* setState(() {
               taskData.status = value == false ? 0 : 1;
-            });
+            });*/
           },
         ),
       );
