@@ -62,10 +62,11 @@ class _SitterRegistrationState extends State<SitterRegistration> {
           backgroundColor: const Color(0xFF8017DA),
           leading:
           IconButton( onPressed: (){
-            Navigator.push(
+           /* Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const HomeScreen()),
-            );
+            );*/
+            Navigator.pop(context);
           },icon:Icon(Icons.arrow_back_ios,size: 20,color: Colors.white,)),
         ),
         body: Stack(

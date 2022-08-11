@@ -51,6 +51,7 @@ dependencies:
   flutter_local_notifications: any
   flutter_launcher_icons: ^0.9.3
   panorama: ^0.4.1
+  flutter_share: ^2.0.0
 
 dev_dependencies:
   flutter_test:

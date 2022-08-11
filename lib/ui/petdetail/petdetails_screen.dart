@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_logs/flutter_logs.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:paw_record/api/ApiConstants.dart';
 import 'package:paw_record/model/DogsDataResponseModel.dart';
 import 'package:paw_record/model/OwnerTaskList.dart';
@@ -119,6 +120,15 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
     });
   }
 
+  Future<void> share() async {
+    await FlutterShare.share(
+        title: 'Paw Record',
+        text: 'Click the link to view the pet image',
+        linkUrl: '${ApiConstants.IMAGEURL}${"/"}${widget.dogsData?.petPic}',
+        chooserTitle: 'Pet Image'
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -146,7 +156,10 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
                 Icons.share_outlined,
                 color: Colors.white,
               ),
-              onPressed: () {},
+              onPressed: () {
+                share();
+
+              },
             )
           ],
         ),
@@ -200,11 +213,16 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
                             DatabaseMethods()
                                 .createChatRoom(chatRoomId, chatRoomMap);
 
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        ChatScreen(chatRoomId: chatRoomId)));
+
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>  ChatScreen(chatRoomId: chatRoomId)),
+                            );
+
+
+
                           },
                           child: Wrap(
                             children: [

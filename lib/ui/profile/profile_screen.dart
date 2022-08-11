@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_share/flutter_share.dart';
+import 'package:paw_record/ui/activities/activities_screen.dart';
 import 'package:paw_record/ui/dashboard/dashboard_screen.dart';
 import 'package:paw_record/ui/home/home_screen.dart';
 import 'package:paw_record/ui/petsitter/petsitterdash/petsitter_dashboard.dart';
@@ -48,7 +50,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           backgroundColor: const Color(0xFFFAFAFA),
           leading: IconButton(
               onPressed: () {
-                SystemNavigator.pop();
+               /* SystemNavigator.pop();*/
+                 Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomeScreen()),
+            );
               },
               icon: Icon(
                 Icons.arrow_back_ios,
@@ -152,6 +158,15 @@ Future<String> getUserType() async {
   return userType;
 }
 
+Future<void> share() async {
+  await FlutterShare.share(
+      title: 'Paw Record',
+      text: 'Click the link get the application',
+      linkUrl: 'https://drive.google.com/drive/folders/1pYZauj_NfTU7komqLPvD7mKorhKv2rDg?usp=sharing',
+      chooserTitle: ''
+  );
+}
+
 Widget makeItemContainer(
     String label, IconData iconData, BuildContext context) {
   return Container(
@@ -177,13 +192,21 @@ Widget makeItemContainer(
             var userType = prefs.getString("user_type");
 
             if (userType == "OWNER") {
-              Navigator.pushReplacement(
+              Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => const SitterRegistration()),
               );
             }
 
+          } else if(label =="Invite friends"){
+            share();
+          } else if(label=="Help"){
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const ActivityScreen()),
+            );
           }
         },
         child: Card(
