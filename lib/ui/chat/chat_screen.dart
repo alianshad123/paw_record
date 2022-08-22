@@ -1,12 +1,17 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_logs/flutter_logs.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:intl/intl.dart';
+import 'package:paw_record/api/ApiConstants.dart';
 import 'package:paw_record/model/Message.dart';
 import 'package:paw_record/ui/utils/Constants.dart';
 import 'package:paw_record/ui/utils/DatabaseMethods.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class ChatScreen extends StatefulWidget {
   final String chatRoomId;
@@ -27,11 +32,12 @@ class _ChatScreenState extends State<ChatScreen> {
 
   late ScrollController _scrollController;
   late String userEmail;
+  List<String> tokens = [];
 
   DatabaseMethods databaseMethods=DatabaseMethods();
   TextEditingController  messageController = TextEditingController();
   late Stream chatMessageStream;
-
+  late QuerySnapshot snapshot;
   void scrollToBottom() {
     final bottomOffset = _scrollController.position.maxScrollExtent;
     _scrollController.animateTo(
@@ -58,7 +64,7 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  sendMessage(){
+  sendMessage() async {
     if(messageController.text.isNotEmpty){
       Map<String,dynamic> messageMap= {
         "message" :messageController.text,
@@ -67,12 +73,74 @@ class _ChatScreenState extends State<ChatScreen> {
       };
       databaseMethods.addConversationMessages(widget.chatRoomId,messageMap);
       messageController.text="";
+
+
+      var seen = Set<String>();
+      List<String> uniqueTokens =
+      tokens.where((token_) => seen.add(token_)).toList();
+      var prefs = await SharedPreferences.getInstance();
+      var sitterEmail = prefs.getString("sitter_email");
+      sendTaskNotification(messageController.text,0,
+          uniqueTokens,userEmail ?? "", context);
+
+
     }
   }
+
+
+  Future<void> sendTaskNotification (
+      String task, int petId, List<String> tokens, String sitterEmail,BuildContext context) async {
+    var data = jsonEncode({
+      "registration_ids": tokens,
+      "notification": {
+        "body": sitterEmail,
+        "title": "New task assigned: "+task,
+        "message": task,
+        "android_channel_id": "high_importance_channel",
+        "titleLocKey": sitterEmail,
+      },
+
+    });
+    var url = Uri.parse(ApiConstants.firebaseUrl);
+    var response = await http.post(url, body: data, headers: {
+      "Accept": "application/json",
+      "content-type": "application/json",
+      "Authorization": Constants.firebaseServerKey
+    });
+    if (response.statusCode == 200) {
+      FlutterLogs.logInfo("JsonDataResponse", "PawJson", response.body);
+    } else {
+      /*showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: const Text('Alert'),
+          content: const Text('Something went wrong,Please try again'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context, 'OK'),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );*/
+    }
+  }
+
+
+
+
+
 
   @override
   void initState() {
     _scrollController = ScrollController();
+
+    databaseMethods.getTokens("tokenData").then((value) {
+      snapshot = value;
+      snapshot?.docs.forEach((element) {
+        tokens.add(element["token"]);
+      });
+    });
     databaseMethods.getConversationMessages(widget.chatRoomId).then((value){
       setState((){
         chatMessageStream =value;
