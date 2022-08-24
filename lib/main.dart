@@ -77,23 +77,38 @@ class _MyAppState extends State<MyApp> {
       if (notification != null && android != null) {
         var prefs = await SharedPreferences.getInstance();
         var userType = prefs.getString("user_type");
-        if (userType == "OWNER") {
-        } else {
-          var userEmail = prefs.getString("USEREMAIL");
-          if (notification.body.toString() == userEmail) {
-            flutterLocalNotificationsPlugin.show(
-                notification.hashCode,
-                notification.title,
-                "",
-                NotificationDetails(
-                  android: AndroidNotificationDetails(
-                    channel.id,
-                    channel.name,
-                    channelDescription: channel.description,
-                    color: Colors.blue,
-                    icon: "@mipmap/ic_launcher",
-                  ),
-                ));
+        var userEmail = prefs.getString("USEREMAIL");
+        if (notification.body.toString() == userEmail) {
+          flutterLocalNotificationsPlugin.show(
+              notification.hashCode,
+              notification.title,
+              "",
+              NotificationDetails(
+                android: AndroidNotificationDetails(
+                  channel.id,
+                  channel.name,
+                  channelDescription: channel.description,
+                  color: Colors.blue,
+                  icon: "@mipmap/ic_launcher",
+                ),
+              ));
+        } else if (notification.body.toString() == "") {
+          if (userType == "OWNER") {
+            if (notification.title == "New Message Received") {
+              flutterLocalNotificationsPlugin.show(
+                  notification.hashCode,
+                  notification.title,
+                  "",
+                  NotificationDetails(
+                    android: AndroidNotificationDetails(
+                      channel.id,
+                      channel.name,
+                      channelDescription: channel.description,
+                      color: Colors.blue,
+                      icon: "@mipmap/ic_launcher",
+                    ),
+                  ));
+            }
           }
         }
       }

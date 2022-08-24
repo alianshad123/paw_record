@@ -81,7 +81,7 @@ class _ChatScreenState extends State<ChatScreen> {
       var prefs = await SharedPreferences.getInstance();
       var sitterEmail = prefs.getString("sitter_email");
       sendTaskNotification(messageController.text,0,
-          uniqueTokens,userEmail ?? "", context);
+          uniqueTokens,sitterEmail ?? "", context);
 
 
     }
@@ -94,7 +94,7 @@ class _ChatScreenState extends State<ChatScreen> {
       "registration_ids": tokens,
       "notification": {
         "body": sitterEmail,
-        "title": "New task assigned: "+task,
+        "title": "New Message Received",
         "message": task,
         "android_channel_id": "high_importance_channel",
         "titleLocKey": sitterEmail,
