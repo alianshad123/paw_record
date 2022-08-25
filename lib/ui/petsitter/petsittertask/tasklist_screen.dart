@@ -2,11 +2,15 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:ffi';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_logs/flutter_logs.dart';
 import 'package:paw_record/api/ApiConstants.dart';
 import 'package:paw_record/model/TaskDataModel.dart';
+import 'package:paw_record/ui/utils/Constants.dart';
+import 'package:paw_record/ui/utils/DatabaseMethods.dart';
+import 'package:paw_record/ui/utils/HelperFunctions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -23,12 +27,21 @@ class _TaskListScreenState extends State<TaskListScreen> {
   late Future<List<Datum>?> tasklist;
   late List<Datum> taskListData;
   late int petId;
+  DatabaseMethods databaseMethods = DatabaseMethods();
+  List<String> tokens = [];
+  late QuerySnapshot snapshot;
 
   @override
   void initState() {
     super.initState();
     petId = widget.petId;
     tasklist= getTaskList(petId,context);
+    databaseMethods.getTokens("tokenData").then((value) {
+      snapshot = value;
+      snapshot?.docs.forEach((element) {
+        tokens.add(element["token"]);
+      });
+    });
 
 
 
@@ -116,9 +129,16 @@ class _TaskListScreenState extends State<TaskListScreen> {
 
 
 
-                              taskListData.forEach((element) {
+                              taskListData.forEach((element) async {
                                 if(element.status==0 ? false:true){
                                   updateTask(petId,element.id,"1",context);
+                                  var seen = Set<String>();
+                                  List<String> uniqueTokens =
+                                  tokens.where((token_) => seen.add(token_)).toList();
+                                  var prefs = await SharedPreferences.getInstance();
+                                  var ownerEmail = prefs.getString(HelperFunctions.SP_OWNER_EMAIL);
+                                  sendTaskNotification(element.petTaskName+" task is completed",petId,
+                                      uniqueTokens,ownerEmail ?? "", context);
 
                                 }
                               });
@@ -140,6 +160,47 @@ class _TaskListScreenState extends State<TaskListScreen> {
     
     ));
   }
+
+
+  Future<void> sendTaskNotification (
+      String task, int petId, List<String> tokens, String sitterEmail,BuildContext context) async {
+    var data = jsonEncode({
+      "registration_ids": tokens,
+      "notification": {
+        "body": sitterEmail,
+        "title": task,
+        "message": task,
+        "android_channel_id": "high_importance_channel",
+        "titleLocKey": sitterEmail,
+      },
+
+    });
+    var url = Uri.parse(ApiConstants.firebaseUrl);
+    var response = await http.post(url, body: data, headers: {
+      "Accept": "application/json",
+      "content-type": "application/json",
+      "Authorization": Constants.firebaseServerKey
+    });
+    if (response.statusCode == 200) {
+      FlutterLogs.logInfo("JsonDataResponse", "PawJson", response.body);
+    } else {
+      showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: const Text('Alert'),
+          content: const Text('Something went wrong,Please try again'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context, 'OK'),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+
 
   Widget createTaskListView(List<Datum>? taskList)=>ListView.builder(
       shrinkWrap: true,

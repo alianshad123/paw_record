@@ -10,6 +10,7 @@ import 'package:paw_record/api/ApiConstants.dart';
 import 'package:paw_record/model/Message.dart';
 import 'package:paw_record/ui/utils/Constants.dart';
 import 'package:paw_record/ui/utils/DatabaseMethods.dart';
+import 'package:paw_record/ui/utils/HelperFunctions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -79,9 +80,18 @@ class _ChatScreenState extends State<ChatScreen> {
       List<String> uniqueTokens =
       tokens.where((token_) => seen.add(token_)).toList();
       var prefs = await SharedPreferences.getInstance();
-      var sitterEmail = prefs.getString("sitter_email");
+      var userType = prefs.getString(HelperFunctions.USER_TYPE);
+      var email;
+      if(userType=="OWNER"){
+        email = prefs.getString("sitter_email");
+      }else{
+        email = prefs.getString(HelperFunctions.SP_OWNER_EMAIL);
+      }
+
+
+     // var sitterEmail = prefs.getString("sitter_email");
       sendTaskNotification(messageController.text,0,
-          uniqueTokens,sitterEmail ?? "", context);
+          uniqueTokens,email ?? "", context);
 
 
     }

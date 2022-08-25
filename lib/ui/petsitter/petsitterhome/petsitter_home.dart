@@ -2,7 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:paw_record/ui/detailviews/detailview_screen.dart';
 import 'package:paw_record/ui/petsitter/petsitterdash/petsitter_dashboard.dart';
-import 'package:paw_record/ui/profile/profile_screen.dart';
+import 'package:paw_record/ui/petsitter/sitter_profile.dart';
 import 'package:paw_record/ui/utils/Constants.dart';
 import 'package:paw_record/ui/utils/DatabaseMethods.dart';
 import 'package:paw_record/ui/utils/HelperFunctions.dart';
@@ -24,7 +24,7 @@ class _PetSitterHomeScreenState extends State<PetSitterHomeScreen> {
 
     const DetailViewScreen(),
 
-    const ProfileScreen()
+    const SitterProfileScreen()
   ];
 
   DatabaseMethods databaseMethods=DatabaseMethods();

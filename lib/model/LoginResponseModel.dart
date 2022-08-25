@@ -47,20 +47,20 @@ class Data {
     String token;
     UserDetails? userDetails;
     List<UserDetails?> sitterDetails;
-    List<dynamic> ownerDetails;
+    List<UserDetails> ownerDetails;
 
     factory Data.fromJson(Map<String, dynamic> json) => Data(
         token: json["token"],
         userDetails: UserDetails?.fromJson(json["user_details"]),
         sitterDetails: List<UserDetails>.from(json["sitter_details"].map((x) => UserDetails.fromJson(x))),
-        ownerDetails: List<dynamic>.from(json["owner_details"].map((x) => x)),
+        ownerDetails: List<UserDetails>.from(json["owner_details"].map((x) => UserDetails.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
         "token": token,
         "user_details": userDetails?.toJson(),
         "sitter_details": List<dynamic>.from(sitterDetails.map((x) => x?.toJson())),
-        "owner_details": List<dynamic>.from(ownerDetails.map((x) => x)),
+        "owner_details": List<dynamic>.from(ownerDetails.map((x) => x?.toJson())),
     };
 }
 

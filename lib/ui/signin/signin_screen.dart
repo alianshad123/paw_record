@@ -308,9 +308,16 @@ signin(String email, String password, BuildContext context) async {
     }
 
     if (_model.type == "OWNER") {
+
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => const HomeScreen()));
+
     } else {
+
+      if (_model.data?.ownerDetails?.isNotEmpty == true) {
+        var ownerEmail = _model.data?.ownerDetails?.first?.email;
+        HelperFunctions.saveOwnerEmail(ownerEmail!);
+      }
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) => const PetSitterHomeScreen()));
     }

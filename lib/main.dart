@@ -92,7 +92,7 @@ class _MyAppState extends State<MyApp> {
                   icon: "@mipmap/ic_launcher",
                 ),
               ));
-        } else if (notification.body.toString() == "") {
+        } /*else if (notification.body.toString() == "") {
           if (userType == "OWNER") {
             if (notification.title == "New Message Received") {
               flutterLocalNotificationsPlugin.show(
@@ -110,7 +110,7 @@ class _MyAppState extends State<MyApp> {
                   ));
             }
           }
-        }
+        }*/
       }
     });
 

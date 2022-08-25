@@ -7,6 +7,7 @@ class HelperFunctions{
   static String USER_TYPE="user_type";
   static String SITTER_EMAIL="sitter_email";
   static String USER_NAME="USER_NAME";
+  static String SP_OWNER_EMAIL="OWNER_EMAIL";
 
 
   static Future<bool> saveUserEmail(String email) async{
@@ -39,6 +40,11 @@ static Future<String?> getUserEmail() async {
   static Future<bool> saveSitterEmail(String email) async{
     SharedPreferences preferences= await SharedPreferences.getInstance();
     return await preferences.setString(SITTER_EMAIL, email);
+  }
+
+  static Future<bool> saveOwnerEmail(String email) async{
+    SharedPreferences preferences= await SharedPreferences.getInstance();
+    return await preferences.setString(SP_OWNER_EMAIL, email);
   }
 
   ////
